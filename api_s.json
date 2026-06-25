@@ -1,0 +1,86 @@
+register json
+{
+    "name": "Sara Faizi",
+    "email": "s.faizi@yahoo.com",
+    "bio": "she is a beautifull girl and i love her. She is an engineer",
+	"password": "sara12345"
+}
+{
+    "name": "Taylor Swift",
+    "email": "t_swift@gmail.com",
+    "bio": "she is a tall girl and i love her songs. She is a famous singer",
+	"password": "tay12345"
+}
+{
+    "name": "David Griffiths",
+    "email": "d.griffiths@gmail.com",
+    "bio": "He began programming at age 12, when he saw a documentary on the work of Seymour Papert. At age 15, he wrote an implementation of Papert’s computer language LOGO.",
+	"password": "dav12345"
+}
+{
+    "name": "Phil Hartley",
+    "email": "ph_hartley@gmail.com",
+    "bio": "he has a degree in Computer Science from Edinburgh, Scotland. Having spent more than 30 years in the IT industry with specific expertise in OOP",
+	"password": "phi12345"
+}
+{
+    "name": "Brian Sawyer",
+    "email": "b.sawyer@gmail.com",
+    "bio": "he was Head First Python’s editor. When not editing books, Brian likes to run marathons in his spare time",
+	"password": "bri12345"
+}
+{
+    "name": "Karen Shaner",
+    "email": "k_shaner@gmail.com",
+    "bio": "she provided administrative support and very capably coordinated the techical review process, responding quickly to my many queries and requests for help.",
+	"password": "kar12345"
+}
+----------
+{
+  "project_id": 6,
+  "assignee_id": 46,
+  "title": "Fix authentication bug",   // ✅ اضافه شد
+  "status": "start",
+  "description": "Actress Kaley Cuoco opened up recently about what she called the lowest part of my life that I ever had,during her divorce from equestrian Karl Cook.",
+  "priority": "middle",
+  "deadline": "2026-09-20"
+}
+{
+	"task_id":32,
+	"original_name":"Geneva",
+	"file_path":"news",
+	"mime_type":"image/jpeg",
+	"size":45,
+	"uploaded_by":46
+}
+
+register json{
+    "name": "Debbi",
+    "email": "d.strling@yahoo.com",
+    "bio": "You have many options for doing this. Pop your code on PyPI, send out lots of emails, putyour code on a CD or USB",
+	"password": "debbi1234"
+}
+UPDATE departments SET title = "guest", description = "A department for newcomers" WHERE id = "1";
+INSERT INTO roles (title, slug) VALUES ("Guest", "guest");
+INSERT INTO memberships (account_id, organization_id, department_id, role_id, created_at, updated_at)VALUES (36, 1, 1, 5, NOW(), NOW()+1);
+UPDATE memberships SET department_id = 10 WHERE id = 4;
+INSERT INTO roles (title, slug, created_at, updated_at) VALUES ('Fan', 'fan', NOW(), NOW()+2);
+UPDATE roles SET permissions = '{"update": true, "delete": true}' WHERE id = 1;
+==============
+{
+	'organization_id': 1,
+	'parent_id':,
+	'path' : '1',
+	'title': 'human resource',
+	'description': 'A department that hold employees information',
+}
+store_task:{
+    "project_id": 1,
+    "assignee_id": 6,
+    "department_id": 5,
+    "status": "active",
+    "priority": "normal",
+    "title": "Create a function in Python",
+    "description": "A function in Python is a named suite of code, which can also take an optional list of arguments if required.",
+    "deadline": "2026-08-01"
+}
