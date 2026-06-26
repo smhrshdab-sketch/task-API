@@ -35,7 +35,7 @@ class AccountService
             // Create membership - FIXED: Remove quotes around numbers
             $member = Membership::create([
                 'account_id' => $account->id,  // This is correct
-                'organization_id' => $account->organization_id,
+                'organization_id' => $account->organization_id ?? 1,
                 'department_id' => 1,  // Remove quotes - should be integer
                 'role_id' => 3,        // Remove quotes - should be integer
                 'status' => 'active',
