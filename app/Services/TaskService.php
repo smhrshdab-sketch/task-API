@@ -4,6 +4,8 @@ namespace App\Services;
 
 use App\Models\Contribute;
 use App\Models\Engage;
+use App\Models\Membership;
+use App\Models\Role;
 use App\Models\Task;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\DB;
@@ -40,7 +42,7 @@ class TaskService
                 foreach($engaged_list as $engaged){
                     $engage = Engage::create([
                         'contributed_by' => current_membership()->id,
-                        'contributor' => $engaged['id'],
+                        'contributor' => $engaged,
                         'task' => $task->id
                     ]);
                     Log::info('An engage is created', [$engage]);
@@ -48,13 +50,23 @@ class TaskService
             }            
             //-------------
             $contributed_list = $data['departments_engaged'];
+            $managerRole = Role::where('slug','manager')->first();;
+            Log::info('managerRole and id: ', [$managerRole,$managerRole->id]);
             if($contributed_list){
                 foreach($contributed_list as $contributed){
                     $contribute = Contribute::create([
-                        'department' => $contributed['id'],
+                        'department' => $contributed,
                         'task' => $task->id
                     ]);
-                    Log::info('An contribute is created', [$contribute]);
+                    Log::info('A contribute is created', [$contribute]);
+                    $manager = Membership::where('department_id',$contributed)->where('role_id',$managerRole->id)->first();
+                    Log::info('manager and id: ', [$manager,$manager->id]);
+                    $managerEngaged = Engage::create([
+                        'contributed_by' => current_membership()->id,
+                        'contributor' => $manager->id,
+                        'task' => $task->id
+                    ]);
+                    Log::info('A manager is engaged', [$managerEngaged]);
                 }
             }            
             Log::info('Task is created', [$task]);
@@ -160,7 +172,7 @@ class TaskService
         return $tasks;
     }
 
-    public function getLastSibling(int $parentId){
+    public function getLastSibling($parentId){
         $query = Task::query();
         
         if ($parentId === null || $parentId === 'null') {
