@@ -21,8 +21,7 @@ class MembershipService
             
             Log::info('Membership created', [
                 'membership_id' => $membership->id,
-                'account_id' => $membership->account_id,
-                'organization_id' => $membership->organization_id
+                'account_id' => $membership->account_id
             ]);
             
             return $membership;
