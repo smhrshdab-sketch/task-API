@@ -21,7 +21,7 @@ class DepartmentController extends Controller{
      * Display a listing of the resource.
      */
     public function index(ViewDepartmentRequest $request){
-        $perPage = $request->input('limit', 10);
+        $perPage = $request->input('limit', 30);
         $search = $request->input('search', '');
         $parentId = $request->input('parentId', null);
         Log::info('DepartmentController@index called', [
