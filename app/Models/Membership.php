@@ -16,6 +16,7 @@ class Membership extends Model
     protected $fillable = [
         'account_id',
         'department_id',
+        'organization_id',
         'role_id',
         'status',
         'permissions_override'
