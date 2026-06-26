@@ -247,7 +247,7 @@ class DepartmentController extends Controller{
                 $result[] = [
                     'id' => $membership->id,
                     //'account_id' => $membership->account_id,
-                    'name' => $membership->account->name ?? 'Unknown',
+                    'title' => $membership->account->name ?? 'Unknown',
                     //'email' => $membership->account->email ?? '',
                     //'avatar_path' => $membership->account->avatar_path ?? null,
                     //'role' => $membership->role->title ?? 'No Role'
