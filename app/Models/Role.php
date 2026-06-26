@@ -30,9 +30,6 @@ class Role extends Model
     //============
     public const MANAGER = 'Manager';
     //============
-    public function departmentUsers(){
-        return $this->hasMany(DepartmentUser::class);
-    }  
     public function accounts(){
         return $this->belongsToMany(Account::class);
     }  
