@@ -74,13 +74,13 @@ use Illuminate\Pagination\LengthAwarePaginator;
             });
         }
         
-        $departments = $query->paginate($perPage);
+        $result = $query->paginate($perPage);
         
-        Log::info('DepartmentService: Results', [
-            'total' => $departments->total(),
-            'current_page' => $departments->currentPage(),
-            'last_page' => $departments->lastPage()
+        Log::info('resultervice: Results', [
+            'total' => $result->total(),
+            'current_page' => $result->currentPage(),
+            'last_page' => $result->lastPage()
         ]);
-        return $departments;
+        return $result;
     }
     }
