@@ -73,30 +73,29 @@ class AccountController extends Controller
      * Display a specific account
      */
     public function me(){
-        //try {
+        logger('me function in AccountController');
+        try {
             //$account = $this->accountService->getAccountById($id);
-            $account = Response()->json(auth('api')->user());
-            //logger('me me',[$account]);
-            
+            $account = Response()->json(auth('api')->user());                        
             if (!$account) {
                 return response()->json([
                     'success' => false,
                     'message' => 'Account not found'
                 ], 404);
             }
-            
+            logger('me me',[$account]);
             return response()->json([
                 'success' => true,
                 'data' => $account,
                 'message' => 'Account retrieved successfully'
             ], 200);
             
-        //} catch (\Exception $e) {
+        } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
                 'message' => 'Failed to retrieve account'
             ], 500);
-       // }
+        }
     }
     public function show(Account $account){
         $this->authorize('view',$account);
