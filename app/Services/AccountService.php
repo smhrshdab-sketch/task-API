@@ -37,7 +37,7 @@ class AccountService
                 'account_id' => $account->id,  // This is correct
                 'organization_id' => $account->organization_id ?? 1,
                 'department_id' => 1,  // Remove quotes - should be integer
-                'role_id' => 3,        // Remove quotes - should be integer
+                'role_id' => 1,        // Remove quotes - should be integer
                 'status' => 'active',
                 'permissions_override' => null,  // Add this if needed
             ]);
