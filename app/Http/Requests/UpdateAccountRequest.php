@@ -60,16 +60,15 @@ class UpdateAccountRequest extends FormRequest
         ];
     }
     
-    protected function prepareForValidation(): void
-    {
+    protected function prepareForValidation(): void{
         // Only hash password if provided
-        if ($this->has('password') && $this->password) {
-            $this->merge([
-                'password' => bcrypt($this->password)
-            ]);
-        } else {
-            // Remove password from validation if not provided
-            $this->request->remove('password');
-        }
+        // if ($this->has('password') && $this->password) {
+        //     $this->merge([
+        //         'password' => bcrypt($this->password)
+        //     ]);
+        // } else {
+        //     // Remove password from validation if not provided
+        //     $this->request->remove('password');
+        // }
     }
 }
