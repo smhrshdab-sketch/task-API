@@ -226,8 +226,7 @@ class AccountService
     /**
      * Get avatar URL for account
      */
-    public function getAvatarUrl(?string $avatarPath): ?string
-    {
+    public function getAvatarUrl(?string $avatarPath): ?string{
         if (!$avatarPath) {
             return null;
         }
