@@ -15,7 +15,6 @@ class Role extends Model
         'slug',
         'permissions',
         'description',
-        'status'
     ];
     protected $casts = [
         //'permissions' => 'json',
