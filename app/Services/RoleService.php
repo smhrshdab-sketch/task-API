@@ -72,12 +72,10 @@
             $key = 'roles_map';
             //Log::info('🔵 🔵 getRoleMap Role SERVICE REACHED 🔵 🔵');
             return Cache::remember($key, now()->addMinutes(30), function () {
-                $result = Role::where('status', 'active')
-                    ->orderBy('slug')
-                    ->get(['id', 'slug as description']) // انتخاب مستقیم ستون‌ها
-                    ->toArray();
-                    // تبدیل Collection به آرایه
-                    logger('getRoleMap: ',[$result]);
+                $result = Role::orderBy('slug')
+                    ->get(['id', 'slug as description'])
+                    ->toArray();                    
+                    //logger('getRoleMap: ',[$result]);
                 return $result;
             });
         }
