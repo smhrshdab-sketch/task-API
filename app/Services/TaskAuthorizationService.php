@@ -43,13 +43,22 @@ class TaskAuthorizationService
         public function canDelete(): bool{
             return $this->hasPermission('task_delete');
         }
+        // public function canSee(): bool{            
+        //     return $this->hasPermission('task_see');
+        // }
+        // public function canSeeOnes(): bool{            
+        //     return $this->hasPermission('task_see_ones');
+        // }
+        // public function canSeeAll(): bool{            
+        //     return $this->hasPermission('task_view_all');
+        // }
         public function canSee(): bool{            
-            return $this->hasPermission('task_see');
+            return $this->hasPermission('task_view');
         }
         public function canSeeOnes(): bool{            
-            return $this->hasPermission('task_see_ones');
+            return $this->hasPermission('task_view');
         }
         public function canSeeAll(): bool{            
-            return $this->hasPermission('task_view_all');
+            return $this->hasPermission('task_view');
         }
 }
