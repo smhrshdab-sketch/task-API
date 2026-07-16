@@ -59,14 +59,19 @@ class TaskService
                         'task' => $task->id
                     ]);
                     Log::info('A contribute is created', [$contribute]);
-                    $manager = Membership::where('department_id',$contributed)->where('role_id',$managerRole->id)->first();
-                    Log::info('manager and id: ', [$manager,$manager->id]);
-                    $managerEngaged = Engage::create([
-                        'contributed_by' => current_membership()->id,
-                        'contributor' => $manager->id,
-                        'task' => $task->id
-                    ]);
-                    Log::info('A manager is engaged', [$managerEngaged]);
+                    try{
+                        $manager = Membership::where('department_id',$contributed)->where('role_id',$managerRole->id)->first();
+                        Log::info('manager and id: ', [$manager,$manager->id]);
+                        $managerEngaged = Engage::create([
+                            'contributed_by' => current_membership()->id,
+                            'contributor' => $manager->id,
+                            'task' => $task->id
+                        ]);
+                        Log::info('A manager is engaged', [$managerEngaged]);
+                    }                    
+                    catch(\Exception $e){
+                        Log::warn("There is no manager for: ",[]);
+                    }
                 }
             }            
             Log::info('Task is created', [$task]);
