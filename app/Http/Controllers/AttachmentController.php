@@ -40,23 +40,28 @@ class AttachmentController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    //public function store(FormRequest $request, Attachable $attachable)
-    public function store(FormRequest $request, Attachable $attachable){
+    public function store(FormRequest $request, Attachable $attachable)
+    {
         try {
-            // Get the uploaded file from request
             $file = $request->file('attachment');
-            logger('controller [store](request,attachable): ',[$request,$attachable]);
-            // Create attachment using service
+            
+            // Build options array from request
+            $options = [
+                'is_public' => $request->input('is_public', false),
+                'disk' => $request->input('disk', 'public'),
+                'description' => $request->input('description', null),
+            ];
+            
             $attachment = $this->attachmentService->createAttachment(
-                $file,  // Pass the UploadedFile object
+                $file,
                 $attachable,
-                $request->input('is_public', false)
+                $options
             );
             
             return response()->json([
                 'success' => true,
                 'data' => $attachment,
-                'message' => 'Attachment uploaded successfully' 
+                'message' => 'Attachment uploaded successfully'
             ], 201);
             
         } catch (\Exception $e) {
