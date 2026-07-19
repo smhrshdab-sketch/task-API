@@ -33,6 +33,7 @@ return new class extends Migration
             $table->foreignId('uploaded_by')->constrained('memberships')->onDelete('cascade');
 
             $table->boolean('is_public')->default(false);
+            $table->text('description')->nullable();
 
             $table->timestamps();
             $table->softDeletes();
