@@ -55,7 +55,8 @@ abstract class BaseAttachmentRequest extends FormRequest
     public function rules(): array
     {
          return [
-            'attachment' => ['required', 'file', 'max:10240', 'mimes:jpg,jpeg,png,pdf,doc,docx'],
+            'attachment' => ['required', 'file', 'max:104857600', 'mimes:jpg,jpeg,png,pdf,doc,docx'],
+            'disk' => ['nullable', 'string', 'in:public,s3,local'],
             'is_public' => ['sometimes', 'boolean'],
         ];
     }
