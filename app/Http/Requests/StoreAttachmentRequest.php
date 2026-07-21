@@ -2,8 +2,9 @@
 
 namespace App\Http\Requests;
 
-use Illuminate\Foundation\Http\FormRequest;
 use App\Contracts\Attachable;
+use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\Log;
 
 abstract class StoreAttachmentRequest extends FormRequest
 {
@@ -16,6 +17,7 @@ abstract class StoreAttachmentRequest extends FormRequest
      */
     public function authorize(): bool
     {
+        Log::info('😛 sStoreAttachmentRequest authorize REACHED 😛');
         $attachable = $this->getAttachableModel();
         
         if (!$attachable) {
@@ -54,6 +56,7 @@ abstract class StoreAttachmentRequest extends FormRequest
      */
     public function rules(): array
     {
+        //
          return [
             'attachment' => ['required', 'file', 'max:10240', 'mimes:jpg,jpeg,png,pdf,doc,docx'],
             'is_public' => ['sometimes', 'boolean'],
@@ -61,6 +64,7 @@ abstract class StoreAttachmentRequest extends FormRequest
     }
     protected function prepareForValidation(): void
     {
+        //Log::info('👿 sStoreAttachmentRequest authorize REACHED 👿');
         if ($this->has('is_public')) {
             $this->merge([
                 'is_public' => filter_var($this->is_public, FILTER_VALIDATE_BOOLEAN)
