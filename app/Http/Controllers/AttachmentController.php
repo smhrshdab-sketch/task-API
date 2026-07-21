@@ -7,7 +7,6 @@ use App\Http\Requests\StoreTaskAttachmentRequest;
 use App\Models\Attachment;
 use App\Models\Task;
 use App\Services\AttachmentService;
-use GuzzleHttp\Psr7\Request;
 use Illuminate\Foundation\Http\FormRequest;
 
 class AttachmentController extends Controller
@@ -21,6 +20,7 @@ class AttachmentController extends Controller
     // Separate method for each type
     //برای هر مدل لازمه که این تابع مخصوص خودش رو بنویسی که بعدا در تابع ذخیره ازس ش استفاده کنی
     public function storeTaskAttachment(StoreTaskAttachmentRequest $request, Task $task){
+        //Log::info('💀 storeTaskAttachment Attachment CONTROLLER REACHED 💀');
         return $this->store($request, $task);
     }
     /**
@@ -40,8 +40,9 @@ class AttachmentController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(FormRequest $request, Attachable $attachable)
-    {
+    public function store(FormRequest $request, Attachable $attachable){
+        //Log::info('🔵👿🔵 store Attachment CONTROLLER REACHED 🔵👿🔵');
+        logger('FormRequest,Attachable',[$request,$attachable]);
         try {
             $file = $request->file('attachment');
             
@@ -57,7 +58,7 @@ class AttachmentController extends Controller
                 $attachable,
                 $options
             );
-            
+            logger('Attachment service:options, attachment',[$options,$attachment]);
             return response()->json([
                 'success' => true,
                 'data' => $attachment,
