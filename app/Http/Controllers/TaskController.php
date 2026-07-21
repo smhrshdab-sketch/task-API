@@ -77,7 +77,7 @@ class TaskController extends Controller
             $request->validated(),
             $parentId
         );
-
+        logger('Created task is: ',[$task]);
         return response()->json([
             'success' => true,
             'data' => $task,
