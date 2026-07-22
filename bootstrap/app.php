@@ -1,5 +1,7 @@
 <?php
 
+use App\Exceptions\MembershipContextMissingException;
+use App\Exceptions\ModelCannotHaveAttachmentsException;
 use App\Http\Middleware\SetDepartmentContext;
 use Illuminate\Auth\Middleware\Authenticate;
 use Illuminate\Foundation\Application;
@@ -19,7 +21,21 @@ return Application::configure(basePath: dirname(__DIR__))
 
     })
     ->withExceptions(function ($exceptions) {
-        //
+        // مدیریت برای وقتی که مدل نمی‌تواند فایل داشته باشد
+        $exceptions->render(function (ModelCannotHaveAttachmentsException $e, $request) {
+            return response()->json([
+                'error' => 'Unauthorize action',
+                'message' => $e->getMessage(),
+            ], 403);
+        });
+
+        // مدیریت برای خطای Membership
+        $exceptions->render(function (MembershipContextMissingException $e, $request) {
+            return response()->json([
+                'error' => ' Access Eror',
+                'message' => 'Please select department',
+            ], 401);
+        });
     })
     ->create();
 
