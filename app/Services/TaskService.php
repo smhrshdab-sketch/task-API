@@ -2,17 +2,17 @@
 
 namespace App\Services;
 
-use App\Models\Contribute;
-use App\Models\Engage;
-use App\Models\Membership;
-use App\Models\Role;
+use App\Events\TaskCreated;
 use App\Models\Task;
+use App\Services\ContributeService;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
-class TaskService
-{
+class TaskService{
+    public function __construct(ContributeService $contributeService){
+        $this->contributeService = $contributeService;
+    }
      public function createTask(array $data, $parentId): Task{
         logger('TaskService (createTask) [data,department_id]: ',[$data,current_department()]);
         return DB::transaction(function () use ($data, $parentId) {
@@ -36,44 +36,20 @@ class TaskService
 
             ]);
             //-------------
-            $engaged_list = $data['memberships_engaged'];
             logger('memberships_engaged and departments_engaged: ',[$data['memberships_engaged'],$data['departments_engaged']]);
-            if($engaged_list){
-                foreach($engaged_list as $engaged){
-                    $engage = Engage::create([
-                        'contributed_by' => current_membership()->id,
-                        'contributor' => $engaged,
-                        'task' => $task->id
-                    ]);
-                    Log::info('An engage is created', [$engage]);
-                }
+            if (!empty($data['memberships_engaged'])) {
+                event(new TaskCreated(
+                    $task, 
+                    $data['memberships_engaged'] // آرایه اینجا منتقل می‌شود
+                ));
             }            
             //-------------
-            $contributed_list = $data['departments_engaged'];
-            $managerRole = Role::where('slug','manager')->first();;
-            Log::info('managerRole and id: ', [$managerRole,$managerRole->id]);
-            if($contributed_list){
-                foreach($contributed_list as $contributed){
-                    $contribute = Contribute::create([
-                        'department' => $contributed,
-                        'task' => $task->id
-                    ]);
-                    Log::info('A contribute is created', [$contribute]);
-                    try{
-                        $manager = Membership::where('department_id',$contributed)->where('role_id',$managerRole->id)->first();
-                        Log::info('manager and id: ', [$manager,$manager->id]);
-                        $managerEngaged = Engage::create([
-                            'contributed_by' => current_membership()->id,
-                            'contributor' => $manager->id,
-                            'task' => $task->id
-                        ]);
-                        Log::info('A manager is engaged', [$managerEngaged]);
-                    }                    
-                    catch(\Exception $e){
-                        Log::warn("There is no manager for: ",[]);
-                    }
-                }
-            }            
+            if (!empty($data['departments_engaged'])) {
+                $this->contributeService->attachDepartment(
+                    $task, 
+                    $data['departments_engaged']
+                );
+            }          
             Log::info('Task is created', [$task]);
             return $task;
         });        
