@@ -2,12 +2,19 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Engage;
 use App\Http\Requests\StoreEngageRequest;
 use App\Http\Requests\UpdateEngageRequest;
+use App\Models\Engage;
+use App\Models\Membership;
+use App\Models\Task;
+use App\Services\EngageService;
 
-class EngageController extends Controller
-{
+class EngageController extends Controller{
+    protected EngageService $engageService;
+
+    public function __construct(EngageService $engageService){
+        $this->engageService = $engageService;
+    }
     /**
      * Display a listing of the resource.
      */
@@ -27,9 +34,10 @@ class EngageController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreEngageRequest $request)
-    {
-        //
+    public function store(StoreEngageRequest $request,Membership $membership,Task $task){
+        //logger('You got EngageController:store (Membership,Task): ',[$membership,$task]);
+        //$engaged = $engageService->
+        return response()->json(['message' => 'EngageController:store is ready','Membership' => $membership,'Task' => $task]);
     }
 
     /**
