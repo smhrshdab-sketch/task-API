@@ -29,7 +29,7 @@ class DepartmentController extends Controller{
             'search' => $search,
             'parent_id' => $parentId
         ]);
-        logger('index(controller_department): search,perPage,parentId',[$search,$perPage,$parentId]);
+        //logger('index(controller_department): search,perPage,parentId',[$search,$perPage,$parentId]);
         try {
             $departments = $this->departmentService->getAllDepartmentsWithPagination([
                 'perPage' => $perPage,
@@ -66,7 +66,7 @@ class DepartmentController extends Controller{
         //     return false;
         // }
         // $membership->account->can('create', new Department());
-        logger('CREATE department controller authorize is : ',[$auth]);
+        //logger('CREATE department controller authorize is : ',[$auth]);
         // User sees form only if authorized
         return response()->json(['message' => 'Ready to create']);
     }
@@ -112,7 +112,7 @@ class DepartmentController extends Controller{
         $perPage = $request->input('limit', 10);
         $search = $request->input('search', '');
         $parentId = $department->id;
-        logger('show(DepartmentController):,search,perPage',[$search,$perPage,$parentId,$department]);
+        //logger('show(DepartmentController):,search,perPage',[$search,$perPage,$parentId,$department]);
         try {
             // Authorize - Check if user can view this department
             
@@ -173,9 +173,9 @@ class DepartmentController extends Controller{
      */
     public function destroy(Department $department){
         $this->authorize('delete',$department);
-        logger()->info('Before delete in destroy controller :', [
-            'department_id' => $department->id
-        ]);
+        // logger()->info('Before delete in destroy controller :', [
+        //     'department_id' => $department->id
+        // ]);
         $result = $this->departmentService->deleteDepartment($department);
         
         if (!$result['success']) {
@@ -213,7 +213,7 @@ class DepartmentController extends Controller{
     // app/Http/Controllers/DepartmentController.php
 
     public function colleague(Request $request){
-         logger()->info('👓 You are in colleague controller : 💥'); 
+         //logger()->info('👓 You are in colleague controller : 💥'); 
         try {
             $dep = $request::header('X-Department-Id');
             
@@ -223,9 +223,9 @@ class DepartmentController extends Controller{
                     'message' => 'Department ID not provided'
                 ], 400);
             }
-            logger('Request: ',[$request]);
+            //logger('Request: ',[$request]);
             ///logger('header: ',[$dep ]);
-            logger('dep: ',[$dep]);
+            //logger('dep: ',[$dep]);
             // Find the department
             $department = Department::find($dep);            
             
@@ -235,7 +235,7 @@ class DepartmentController extends Controller{
                     'message' => 'Department not found'
                 ], 404);
             }
-            logger('departments: ',[$department]);
+            //logger('departments: ',[$department]);
             // Get memberships with their accounts
             $memberships = $department->memberships()
                 ->with('account')  // Eager load account relationship
@@ -254,7 +254,7 @@ class DepartmentController extends Controller{
                 ];
             }
             
-            logger('(department Controller) colleague: ', [$result]);
+            //logger('(department Controller) colleague: ', [$result]);
             
             return response()->json([
                 'success' => true,
@@ -272,7 +272,7 @@ class DepartmentController extends Controller{
         }
     }
     public function subDepartments(Request $request){
-        logger()->info('👓 You are in subDepartments controller : 💥'); 
+        //logger()->info('👓 You are in subDepartments controller : 💥'); 
         try{
             $dep = $request::header('X-Department-Id');
             
@@ -303,7 +303,7 @@ class DepartmentController extends Controller{
                     'title' => $child->title ?? 'Unknown'
                 ];
             }
-            logger('sub departments: ',[$result]);
+            //logger('sub departments: ',[$result]);
             return response()->json([
                 'success' => true,
                 'data' => $result
