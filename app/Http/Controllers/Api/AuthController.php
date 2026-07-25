@@ -29,15 +29,15 @@ class AuthController extends Controller{
             ], 401);
         }
 
-        logger('Login success', [
-            'email' => $credentials['email'],
-            'user_id' => Auth::guard('api')->user()->id,
-        ]);
+        // logger('Login success', [
+        //     'email' => $credentials['email'],
+        //     'user_id' => Auth::guard('api')->user()->id,
+        // ]);
         $uid = auth('api')->user();
         $member = $uid->memberships;
         //$member = Membership::where('account_id',$uid->id);
-        logger('Account: ',[$uid->name]);
-        logger('Membership: ',[$member[0]]);
+        // logger('Account: ',[$uid->name]);
+        // logger('Membership: ',[$member[0]]);
         return response()->json([
             'access_token' => $token,
             'token_type'   => 'bearer',
@@ -48,7 +48,7 @@ class AuthController extends Controller{
     }
     //===========
     public function me(){
-        logger('me me');
+        //logger('me me');
         return response()->json(auth('api')->user());
     }
 

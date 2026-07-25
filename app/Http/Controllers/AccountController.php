@@ -83,7 +83,7 @@ class AccountController extends Controller
                     'message' => 'Account not found'
                 ], 404);
             }
-            logger('me me',[$account]);
+            //logger('me me',[$account]);
             return response()->json([
                 'success' => true,
                 'data' => $account,
@@ -99,7 +99,7 @@ class AccountController extends Controller
     }
     public function show(Account $account){
         $this->authorize('view',$account);
-        logger()->info('Before view in show controller :', ['account_id' => $account->id]);
+        //logger()->info('Before view in show controller :', ['account_id' => $account->id]);
         app(AuditLogService::class)->record($account, 'viewed', [
             'description' => 'Account viewed',
             'metadata' => ['table' => $account->getTable()],
