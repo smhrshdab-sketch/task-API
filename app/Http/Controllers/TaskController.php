@@ -23,7 +23,7 @@ class TaskController extends Controller
      * Display a listing of the resource.
      */
     public function index(ViewTaskRequest $request){ 
-        Log::info('🔵🔵🔵 Index Task CONTROLLER REACHED 🔵🔵🔵');
+        //Log::info('🔵🔵🔵 Index Task CONTROLLER REACHED 🔵🔵🔵');
        try {
             $tasks = $this->taskService->getCurrentUserTasks();
             logger('Tasks: ',[$tasks]);
@@ -66,13 +66,12 @@ class TaskController extends Controller
      * Store a newly created resource in storage.
      */
     public function store(StoreTaskRequest $request){
-        // Get parent_id from request, convert empty string or 0 to null
-            $parentId = $request->input('parent_id');
-            
-            // Convert falsy values to null for root departments
-            if (empty($parentId) || $parentId === 0 || $parentId === '0') {
-                $parentId = null;
-            }
+        logger('(TaskController_store) attachments is: ',[$request->file('attachments')]);
+        $parentId = $request->input('parent_id');
+        
+        if (empty($parentId) || $parentId === 0 || $parentId === '0') {
+            $parentId = null;
+        }
         $task = $this->taskService->createTask(
             $request->validated(),
             $parentId
