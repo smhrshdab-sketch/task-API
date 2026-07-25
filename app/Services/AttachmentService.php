@@ -21,7 +21,7 @@ class AttachmentService{
         array $options = []
     ): Attachment
     {
-        Log::info('🔵🔵🔵 store Attachment SERVICE REACHED 🔵🔵🔵');
+        Log::info('1️⃣2️⃣3️⃣ store Attachment SERVICE REACHED 3️⃣2️⃣1️⃣');
         return DB::transaction(function () use ($file, $attachable, $options) {
             logger('file,attachable ',[$file,$attachable]);
             // 1️⃣ Extract options with defaults
