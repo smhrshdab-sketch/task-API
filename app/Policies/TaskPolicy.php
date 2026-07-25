@@ -22,7 +22,7 @@ class TaskPolicy
      */
     public function viewAny(Account $user): bool{
         $membership = current_membership();
-        logger()->info('you are in task Policy(viewAny) and you are: ',[$membership]);
+        //logger()->info('you are in task Policy(viewAny) and you are: ',[$membership]);
         if (!$membership) {
             return false;
         }
@@ -34,7 +34,7 @@ class TaskPolicy
             return false;
         }
         $result = $this->auth->canSeeOnes();
-        logger()->info('you are in task Policy(viewOnes) and you are: ',[$membership->account->name,$result]);
+        //logger()->info('you are in task Policy(viewOnes) and you are: ',[$membership->account->name,$result]);
         return $result;
     }
 
@@ -43,7 +43,7 @@ class TaskPolicy
      */
     public function view(Account $user, Task $task): bool{
         $membership = current_membership();
-        logger()->info('you are in task Policy(VIEW) and you are: ',[$membership]);
+        //logger()->info('you are in task Policy(VIEW) and you are: ',[$membership]);
         if (!$membership) {
             return false;
         }
@@ -84,7 +84,7 @@ class TaskPolicy
      */
     public function delete(Account $user, task $task ): bool{
         $membership = current_membership();
-        logger()->info('you are in taskPolicy(delete) and you are: ',[$membership->account->name]);
+        //logger()->info('you are in taskPolicy(delete) and you are: ',[$membership->account->name]);
         if (!$membership) {
             return false;
         }
