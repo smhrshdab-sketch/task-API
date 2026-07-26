@@ -19,12 +19,19 @@ class AttachMembersToTask
      */
     public function handle(object $event): void{
          // دسترسی به آرایه از طریق شیء event
+        $currentMembershipId = current_membership()->id ?? null;
+        logger('Listener: current_membership()->id: ', [$currentMembershipId]);
+        logger('Listener: event->membershipIds: ', $event->membershipIds);
+        logger('Listener: event->task->id: ', [$event->task->id]);
          foreach ($event->membershipIds as $id) {
-            Engage::create([
-                'task' => $event->task->id,
+            $createData = [
+                'contributed_by' => current_membership()->id,
                 'contributor' => $id,
-                'contributed_by' => current_membership()->id
-            ]);
+                'task' => $event->task->id              
+            ];
+            logger('Attempting to create Engage with: ', $createData);
+            
+            Engage::create($createData);
         }
     }
 }
