@@ -4,17 +4,22 @@ namespace App\Services;
 
 use App\Events\TaskCreated;
 use App\Models\Task;
+use App\Services\AttachmentService;
 use App\Services\ContributeService;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
 class TaskService{
-    public function __construct(ContributeService $contributeService){
+    protected ContributeService $contributeService;
+    protected AttachmentService $attachmentService;
+    public function __construct(ContributeService $contributeService,AttachmentService $attachmentService){
         $this->contributeService = $contributeService;
+        $this->attachmentService = $attachmentService;
     }
      public function createTask(array $data, $parentId): Task{
-        logger('TaskService (createTask) [data,department_id]: ',[$data,current_department()]);
+        logger('TaskService (createTask) [data]: ',[$data]);
         return DB::transaction(function () use ($data, $parentId) {
             $nextPath = $this->getNextPathNumber($parentId);
             
@@ -37,19 +42,40 @@ class TaskService{
             ]);
             //-------------
             logger('memberships_engaged and departments_engaged: ',[$data['memberships_engaged'],$data['departments_engaged']]);
+            logger('TaskService: current_membership()->id: ', [current_membership()->id]);
             if (!empty($data['memberships_engaged'])) {
                 event(new TaskCreated(
                     $task, 
                     $data['memberships_engaged'] // آرایه اینجا منتقل می‌شود
                 ));
-            }            
+            }     
+            Log::info('members are engaged');       
             //-------------
             if (!empty($data['departments_engaged'])) {
                 $this->contributeService->attachDepartment(
                     $task, 
                     $data['departments_engaged']
                 );
-            }          
+            } 
+            Log::info('departments are contributed');  
+            //-------------
+            if (!empty($data['attachments'])) {
+                logger('TaskService_Create: attachment_list:',[$data['attachments']]);
+                $attachments = $data['attachments'];
+                $options['is_public'] = true;
+                $options['disk'] = 'public';
+                $options['description'] = null;
+                foreach ($attachments as $file) {
+                    if ($file instanceof UploadedFile){
+                        $this->attachmentService->createAttachment(                    
+                            $file,
+                            $task, 
+                            $options
+                        );
+                    }
+                }
+            }    
+            Log::info('attachments are attached');      
             Log::info('Task is created', [$task]);
             return $task;
         });        
