@@ -28,7 +28,7 @@ class ContributeService{
                 else{                    
                     //Log::info('manager and id: ', [$manager,$manager->id]);
                     $managerEngaged = Engage::create([
-                        'depId_by' => current_membership()->id,
+                        'contributed_by' => current_membership()->id,
                         'contributor' => $manager->id,
                         'task' => $task->id
                     ]);
