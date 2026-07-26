@@ -22,4 +22,5 @@
 /vendor
 Homestead.json
 Homestead.yaml
-Thumbs.db
+Thumbs.dbbootstrap/cache/
+storage/
