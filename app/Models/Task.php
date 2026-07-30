@@ -36,7 +36,13 @@ class Task extends Model implements Attachable
     public function department(){
         return $this->belongsTo(Department::class);
     }
-
+    public function contributors()
+    {
+        return $this->hasMany(Engage::class, 'task');
+    }
+    public function engage(){
+        return $this->hasMany(Engage::class);
+    }
    //---------
     public function assignee(){
         return $this->belongsTo(Membership::class, 'assignee_id');//بدون مشخص کردن ستون مشترک(ی که اسم متفاوتی داره!) رابطه کار نمیکند
