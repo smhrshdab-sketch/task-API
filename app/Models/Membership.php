@@ -30,23 +30,35 @@ class Membership extends Model
         return $this->belongsTo(Role::class);
     }
     public function account(){
-        return $this->belongsTo(Account::class);
+        logger('IN => Model->membership->account');
+        $rel = $this->belongsTo(Account::class);
+        logger('==> account: ',[$rel]);
+        return $rel;
     }
     public function department(){
         return $this->belongsTo(Department::class);
+    }
+    public function engage(){
+        logger('IN => Model->membership->engage');
+        $rel =  $this->hasMany(Engage::class,'contributor');//بدون مشخص کردن ستون مشترک(ی که اسم متفاوتی داره!) رابطه کار نمیکند
+        logger('result: ',[$rel]);
+        return $rel;
     }
     public function ownTasks(){
         return $this->hasMany(Task::class,'assignee_id');//بدون مشخص کردن ستون مشترک(ی که اسم متفاوتی داره!) رابطه کار نمیکند
     }
     public function inTasks(){
-        return $this->hasManyThrough(
+        logger('IN => Model->membership->inTasks');
+        $rel = $this->hasManyThrough(
             Task::class,
             Engage::class,
-            'contributor',  // Foreign key on Engage (membership_id)
-            'id',           // Foreign key on Task
-            'id',           // Local key on Membership
-            'task'          // Local key on Engage (task_id)
+            'task',        // ✅ Engage.task → Task.id
+            'id',          // ✅ Task.id
+            'id',          // ✅ Membership.id
+            'contributor'  // ✅ Engage.contributor → Membership.id
         );
+        logger('result: ',[$rel]);
+        return $rel;
     }
     public function auditLogs(){
         return $this->hasMany(AuditLog::class, 'causer_id', 'id');
