@@ -69,8 +69,11 @@ class Department extends Model
     public function isAncestorOf(Department $other): bool{
         return str_starts_with($other->path, $this->path . '.');//وجود اسلش یا خط تیره یا نقطه در آخر مسیر بععث جلوگیری از خطا می شود(Screenshot 2026-04-24 173828)
     }
-    public function tasks(){
+    public function create_tasks(){
         return $this->hasMany(Task::class);
+    }
+    public function work_on_tasks(){
+        return $this->hasMany(Contribute::class,'department');
     }
     /**
      * Check if department can be moved up
