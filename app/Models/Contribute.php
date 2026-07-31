@@ -16,10 +16,13 @@ class Contribute extends Model
         'status'
     ];
     //=================================================
-    public function departmrnt(){
-        return $this->belongsTo(Department::class);
+    public function department(){
+        logger('IN => Contribute_Model');
+        $rel = $this->belongsTo(Department::class,'department');
+        logger('==> department: ',[$rel]);
+        return $rel;
     }
-    public function membership(){
-        return $this->belongsTo(Membership::class);
+    public function task(){
+        return $this->belongsTo(Membership::class,'task');
     }
 }
