@@ -17,10 +17,17 @@ class Engage extends Model
         'status'
     ];
     //=================================================
-    public function task(){
-        return $this->belongsTo(Task::class);
+    public function task(){        
+        logger('IN => Engage_Model');
+        $rel = $this->belongsTo(Task::class);
+        logger('==>  task: ',[$rel]);
+        return $rel;
     }
     public function membership(){
-        return $this->belongsTo(Membership::class,'contributor');
+        logger('IN => Engage_Model');
+        $rel = $this->belongsTo(Membership::class, 'contributor');
+        //return $this->belongsTo(Membership::class, 'contributor');
+        logger('==> membership: ',[$rel]);
+        return $rel;
     }
 }
