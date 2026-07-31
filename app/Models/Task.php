@@ -36,6 +36,9 @@ class Task extends Model implements Attachable
     public function department(){
         return $this->belongsTo(Department::class);
     }
+    public function departments(){
+        return $this->hasMany(Contribute::class,'task');
+    }
     public function contributors()
     {
         return $this->hasMany(Engage::class, 'task');
