@@ -44,13 +44,31 @@ class TaskController extends Controller
 
     public function show(Task $task){
         $this->authorize('viewAny',$task);
+        logger(' *#* task_controller_show ** ');
+        $task->load([
+            'assignee.account',               // Who is assigned
+            'assignee.department',            // Assignee's department
+            'department',                     // Task's department
+            'project',                        // Task's project
+            'contributors.membership.account', // Contributors with membership & account
+            //'contributorMemberships.account',  // Direct membership access
+        ]);
+        logger('Task loaded successfully', [
+            'task_id' => $task->id,
+            'title' => $task->title,
+            'assignee' => $task->assignee?->account?->name,
+            'contributors_count' => $task->contributors->count(),
+        ]);
+        //$membershipData = Membership::with(['account', 'department', 'role'])->findOrFail($membership->id);
+        $result = Task::with(['assignee.account', 'contributors.membership.account','department'])->findOrFail($task->id);
         app(AuditLogService::class)->record($task, 'viewed', [
             'description' => 'Task viewed',
             'metadata' => ['table' => $task->getTable()],
         ]);
+        logger('[task_controller_show]result: ',[$result]);
         return response()->json([
             'success' => true,
-            'data' => $task,
+            'data' => $result,
             'message' => 'Task is retrieved successfully'
         ], 201);
     }
