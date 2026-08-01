@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Contracts\Attachable;
+use App\Http\Requests\AddAttachmentRequest;
 use App\Http\Requests\StoreTaskAttachmentRequest;
 use App\Models\Attachment;
 use App\Models\Task;
@@ -116,5 +117,11 @@ class AttachmentController extends Controller
                 'error' => $e->getMessage()
             ], 500);
         }
+    }
+
+    //
+
+    public function add(AddAttachmentRequest $request){
+        //
     }
 }
