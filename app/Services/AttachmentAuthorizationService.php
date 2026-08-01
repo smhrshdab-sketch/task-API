@@ -38,5 +38,8 @@
         }
         public function canSeeAll(): bool{            
             return $this->hasPermission('attachment_view_all');
+        }
+        public function canUpdate(): bool{
+            return $this->hasPermission('attachment_Update');
         } 
     }
