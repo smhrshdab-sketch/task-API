@@ -50,9 +50,13 @@ class AttachmentPolicy{
     /**
      * Determine whether the user can update the model.
      */
-    public function update(Account $user, Attachment $attachment): bool
-    {
-        return false;
+    public function update(Account $user, Attachment $attachment): bool{
+        $membership = current_membership();
+        if (!$membership) {
+            logger()->warning('No membership provided');
+            return false;
+        }
+        return $this->auth->canUpdate();
     }
 
     /**
