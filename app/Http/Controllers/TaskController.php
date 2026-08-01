@@ -45,7 +45,13 @@ class TaskController extends Controller
     public function show(Task $task){
         $this->authorize('viewAny',$task);
         logger(' *#* task_controller_show ** ');
-        $result = Task::with(['assignee.account', 'contributors.membership.account','contributors.membership.role','departments.department'])->findOrFail($task->id);
+        $result = Task::with([
+            'assignee.account',
+            'contributors.membership.account',
+            'contributors.membership.role',
+            'departments.department',
+            'attachments'
+        ])->findOrFail($task->id);
         app(AuditLogService::class)->record($task, 'viewed', [
             'description' => 'Task viewed',
             'metadata' => ['table' => $task->getTable()],
