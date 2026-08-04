@@ -48,7 +48,7 @@ class AttachmentService{
                 logger('Store success. Path: ' . $path);
             } catch (\Exception $e) {
                 logger('CRITICAL ERROR in store: ' . $e->getMessage());
-                throw $e; // دوباره خطا را پرتاب کن تا بفهمیم مشکل از کجاست
+                throw $e;
             }
             logger('path',[$path]);
             if (!$path) {

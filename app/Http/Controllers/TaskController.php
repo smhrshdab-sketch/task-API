@@ -96,6 +96,8 @@ class TaskController extends Controller
     // --------------------
 
     public function update(UpdateTaskRequest $request, Task $task){
+        Log::info('👿 TaskController update REACHED 👿');
+        logger('Task: ',[$task]);
         $updatedTask = $this->taskService->updateTask(
             $task,
             $request->validated()

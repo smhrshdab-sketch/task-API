@@ -28,7 +28,10 @@ class AddAttachmentRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'model' => ['required','string'],
+            'record' => ['required','string'],
+            'attachment' => ['required', 'file', 'max:102400', 'mimes:jpg,jpeg,png,pdf,doc,docx,zip,txt,mp3,mp4,mkv,mpeg'],
+            'is_public' => ['sometimes', 'boolean'],
         ];
     }
 }

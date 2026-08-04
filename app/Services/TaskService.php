@@ -84,6 +84,8 @@ class TaskService{
     // ------------------------
 
     public function updateTask(Task $task, array $data): Task{
+        Log::info('🤖 TaskService update REACHED 🤖');
+        logger('Task,data : ',[$task,$data]);
         return DB::transaction(function () use ($task, $data) {
 
             $task->update($data);
