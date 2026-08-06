@@ -18,16 +18,16 @@ class Engage extends Model
     ];
     //=================================================
     public function task(){        
-        logger('IN => Engage_Model');
+        //logger('IN => Engage_Model');
         $rel = $this->belongsTo(Task::class);
-        logger('==>  task: ',[$rel]);
+        //logger('==>  task: ',[$rel]);
         return $rel;
     }
     public function membership(){
-        logger('IN => Engage_Model');
+        //logger('IN => Engage_Model');
         $rel = $this->belongsTo(Membership::class, 'contributor');
         //return $this->belongsTo(Membership::class, 'contributor');
-        logger('==> membership: ',[$rel]);
+        //logger('==> membership: ',[$rel]);
         return $rel;
     }
 }
