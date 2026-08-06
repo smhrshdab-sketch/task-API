@@ -25,8 +25,7 @@ class Task extends Model implements Attachable
         'deadline',
     ];
     public const TYPE = '1';
-     public function assigneeAccount()
-    {
+     public function assigneeAccount(){
         return $this->assignee ? $this->assignee->account : null;
     }
     public function project(){
@@ -39,8 +38,7 @@ class Task extends Model implements Attachable
     public function departments(){
         return $this->hasMany(Contribute::class,'task');
     }
-    public function contributors()
-    {
+    public function contributors(){
         return $this->hasMany(Engage::class, 'task');
     }
     public function engage(){
@@ -58,19 +56,23 @@ class Task extends Model implements Attachable
     public function attachments(){
         return $this->morphMany(Attachment::class, 'attachable');
     }
+    public function memberships(){
+        //return $this->hasManyThrough(Membership::class, Engage::class, 'task');
+        return $this->belongsToMany(Membership::class, 'engages', 'task', 'contributor')
+                    ->withPivot('contributed_by', 'status', 'description')
+                    ->withTimestamps();
+    }
     /**
      * Check if task can have attachments
      */
-    public function canHaveAttachments(): bool
-    {
+    public function canHaveAttachments(): bool{
         return !$this->trashed();
     }
     
     /**
      * Get folder name for storing attachments
      */
-    public function getAttachmentFolderName(): string
-    {
+    public function getAttachmentFolderName(): string{
         return 'tasks';
     }
     //===========
