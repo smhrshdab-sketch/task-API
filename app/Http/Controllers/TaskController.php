@@ -10,13 +10,13 @@ use App\Models\Task;
 use App\Services\AuditLogService;
 use App\Services\TaskService;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Http\Request;
 
 class TaskController extends Controller
 {
     protected TaskService $taskService;
 
-    public function __construct(TaskService $taskService)
-    {
+    public function __construct(TaskService $taskService){
         $this->taskService = $taskService;
     }
     /**
@@ -167,4 +167,33 @@ class TaskController extends Controller
             }
         }
     }
+    public function updateMembers(Request $request, $taskId){
+        Log::info('👿 TaskController_updateMembers REACHED 👿');
+        $membership = current_membership();        
+            if(!$membership){
+                Log::warning('TaskAuthorizationService: No membership found');
+                return false;
+            }
+        $validated = $request->validate([
+            'memberships_engaged' => 'nullable|array',
+            'memberships_engaged.*' => 'exists:memberships,id',
+        ]);
+        logger('$validated : ',[$validated]);
+        $memberships = $request->input('memberships_engaged',[]);
+        logger('request, taskId, memberships: ',[$request,$taskId,$memberships]);
+        $task = Task::findOrFail($taskId);
+        logger('task: ',[$task]);
+        $syncData = [];
+        foreach($memberships as $membershipId){
+            $syncData[$membershipId] = [
+                'contributed_by' => $membership->id,
+                'status' => 'active',
+                'description' => 'Ay jan ...'
+            ];
+        }
+        $task->memberships()->sync($syncData);
+        //logger('task: ',[$task]);
+        return response()->json(['message' => 'Updated successfully']);
+    }
+
 }
