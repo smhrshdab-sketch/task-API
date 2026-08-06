@@ -17,9 +17,9 @@ class Contribute extends Model
     ];
     //=================================================
     public function department(){
-        logger('IN => Contribute_Model');
+        //logger('IN => Contribute_Model');
         $rel = $this->belongsTo(Department::class,'department');
-        logger('==> department: ',[$rel]);
+        //logger('==> department: ',[$rel]);
         return $rel;
     }
     public function task(){

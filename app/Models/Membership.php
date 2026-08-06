@@ -30,25 +30,25 @@ class Membership extends Model
         return $this->belongsTo(Role::class);
     }
     public function account(){
-        logger('IN => Model->membership->account');
+        //logger('IN => Model->membership->account');
         $rel = $this->belongsTo(Account::class);
-        logger('==> account: ',[$rel]);
+        //logger('==> account: ',[$rel]);
         return $rel;
     }
     public function department(){
         return $this->belongsTo(Department::class);
     }
     public function engage(){
-        logger('IN => Model->membership->engage');
+        //logger('IN => Model->membership->engage');
         $rel =  $this->hasMany(Engage::class,'contributor');//بدون مشخص کردن ستون مشترک(ی که اسم متفاوتی داره!) رابطه کار نمیکند
-        logger('result: ',[$rel]);
+        //logger('result: ',[$rel]);
         return $rel;
     }
     public function ownTasks(){
         return $this->hasMany(Task::class,'assignee_id');//بدون مشخص کردن ستون مشترک(ی که اسم متفاوتی داره!) رابطه کار نمیکند
     }
     public function inTasks(){
-        logger('IN => Model->membership->inTasks');
+        //logger('IN => Model->membership->inTasks');
         $rel = $this->hasManyThrough(
             Task::class,
             Engage::class,
@@ -57,7 +57,7 @@ class Membership extends Model
             'id',          // ✅ Membership.id
             'contributor'  // ✅ Engage.contributor → Membership.id
         );
-        logger('result: ',[$rel]);
+        //logger('result: ',[$rel]);
         return $rel;
     }
     public function auditLogs(){

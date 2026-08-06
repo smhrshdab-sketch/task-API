@@ -73,7 +73,7 @@ class AccountController extends Controller
      * Display a specific account
      */
     public function me(){
-        logger('me function in AccountController');
+        //logger('me function in AccountController');
         try {
             //$account = $this->accountService->getAccountById($id);
             $account = Response()->json(auth('api')->user());                        
