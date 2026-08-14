@@ -60,6 +60,7 @@ use Tymon\JWTAuth\Facades\JWTAuth;
         Route::delete('task/{task}', [TaskController::class, 'destroy'])->name("task_delete");
         Route::get('task/{task}', [TaskController::class, 'show'])->name("task_detail");
         Route::get('task', [TaskController::class, 'index'])->name("task_list");        
+        Route::put('task/{task}/engage', [TaskController::class, 'updateMembers'])->name("task_engage");
 
         //============ Attachment =======
         Route::post('tasks/{task}/attachments', [AttachmentController::class, 'storeTaskAttachment']);
