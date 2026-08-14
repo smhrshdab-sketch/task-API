@@ -44,7 +44,7 @@ class TaskController extends Controller
 
     public function show(Task $task){
         $this->authorize('viewAny',$task);
-        logger(' *#* task_controller_show ** ');
+        //logger(' *#* task_controller_show ** ');
         $result = Task::with([
             'assignee.account',
             'contributors.membership.account',
@@ -56,7 +56,7 @@ class TaskController extends Controller
             'description' => 'Task viewed',
             'metadata' => ['table' => $task->getTable()],
         ]);
-        logger('[task_controller_show]result: ',[$result]);
+        //logger('[task_controller_show]result: ',[$result]);
         return response()->json([
             'success' => true,
             'data' => $result,
@@ -140,35 +140,8 @@ class TaskController extends Controller
             ]
         ]);
     }
-    public function memberships(Task $task){
-        if(!$task){
-            logger('Choose  a task to show memberships');
-            return;
-        }
-        else{
-            $membership = $task->memberships;
-            if(!$membership){
-                logger("roekokpo");
-                return;
-            }
-            else{
-                $accounts = $memberships->accounts;
-                if(!$accounts){
-                    logger("oiperkopke");
-                    return;
-                }
-                else{
-                    return response()->json([
-                        'success' => true,
-                        'data' => $accounts->name,
-                        'message' => 'Task is retrieved successfully'
-                    ], 201);
-                }
-            }
-        }
-    }
     public function updateMembers(Request $request, $taskId){
-        Log::info('👿 TaskController_updateMembers REACHED 👿');
+        //Log::info('👿 TaskController_updateMembers REACHED 👿');
         $membership = current_membership();        
             if(!$membership){
                 Log::warning('TaskAuthorizationService: No membership found');
@@ -176,13 +149,13 @@ class TaskController extends Controller
             }
         $validated = $request->validate([
             'memberships_engaged' => 'nullable|array',
-            'memberships_engaged.*' => 'exists:memberships,id',
+            'memberships_engaged.*' => 'exists:memberships,id',//به این معنی است که آیم ود ننظر باید در مدل/جدول ذکر شده موجود باشد
         ]);
-        logger('$validated : ',[$validated]);
+        //logger('$validated : ',[$validated]);
         $memberships = $request->input('memberships_engaged',[]);
-        logger('request, taskId, memberships: ',[$request,$taskId,$memberships]);
+        //logger('request, taskId, memberships: ',[$request,$taskId,$memberships]);
         $task = Task::findOrFail($taskId);
-        logger('task: ',[$task]);
+        //logger('task: ',[$task]);
         $syncData = [];
         foreach($memberships as $membershipId){
             $syncData[$membershipId] = [
