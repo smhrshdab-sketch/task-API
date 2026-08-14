@@ -241,7 +241,7 @@ class DepartmentController extends Controller{
                 ->with('account')  // Eager load account relationship
                 ->where('status', 'active')
                 ->get();
-            logger('memberships: ',[$memberships]);
+            //logger('memberships: ',[$memberships]);
             $result = [];
             foreach ($memberships as $membership) {
                 $result[] = [
@@ -271,31 +271,17 @@ class DepartmentController extends Controller{
             ], 500);
         }
     }
-    public function subDepartments(Request $request){
-        //logger()->info('👓 You are in subDepartments controller : 💥'); 
+    public function subDepartments(Request $request,Department $department){
+        logger()->info('👓 You are in subDepartments controller : 💥'); 
         try{
-            $dep = $request::header('X-Department-Id');
-            
-            if (!$dep) {
+            if (!$department) {
                 return response()->json([
                     'success' => false,
                     'message' => 'Department ID not provided'
                 ], 400);
             }
-            //logger('Request: ',[$request]);
-            ///logger('header: ',[$dep ]);
-            //logger('dep: ',[$dep]);
-            // Find the department
-            $departments = Department::find($dep);            
-            
-            if (!$departments) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Department not found'
-                ], 404);
-            }
-            //logger('departments: ',[$departments]);
-            $children = $departments->children()->get();
+            logger('dep: ',[$department]);
+            $children = $department->children()->get();
             $result = [];
             foreach ($children as $child) {
                 $result[] = [
@@ -303,7 +289,7 @@ class DepartmentController extends Controller{
                     'title' => $child->title ?? 'Unknown'
                 ];
             }
-            //logger('sub departments: ',[$result]);
+            logger('sub departments: ',[$result]);
             return response()->json([
                 'success' => true,
                 'data' => $result
