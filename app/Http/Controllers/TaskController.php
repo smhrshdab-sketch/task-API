@@ -168,5 +168,18 @@ class TaskController extends Controller
         //logger('task: ',[$task]);
         return response()->json(['message' => 'Updated successfully']);
     }
+    public function addAttachments(Request $request,Task $task){
+        return response()->json([
+            'success' => true,
+            'data' => [
+                'task' => [
+                    'id' => $task->id,
+                    'title' => $task->title,
+                    'department_id' => $task->department_id
+                ],
+                'request' => $request
+            ]
+        ]);
+    }
 
 }
