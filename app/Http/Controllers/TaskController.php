@@ -169,13 +169,26 @@ class TaskController extends Controller
         return response()->json(['message' => 'Updated successfully']);
     }
     public function addAttachments(Request $request,Task $task){
+        Log::info('👿 TaskController_addAttachments REACHED 👿');
+        logger('task,attachment: ',[$task, $request->file('attachments')]);
+        $request->validate([
+            'attachments'   => 'required|array|min:1',
+            'attachments.*' => 'file|max:10240',   // هر فایل حداکثر ۱۰ مگابایت
+        ]);
+    
+        $files = $request->file('attachments');   // حالا آرایهای از UploadedFile است
+        Log::info('Received files: ', ['count' => count($files)]);
+    
+        foreach ($files as $file) {
+            logger('files: ',[$file->getClientOriginalName()]);
+        }
         return response()->json([
             'success' => true,
+            'message' => "congragulation you got _addAttachments_ function",
             'data' => [
                 'task' => [
                     'id' => $task->id,
-                    'title' => $task->title,
-                    'department_id' => $task->department_id
+                    'title' => $task->title
                 ],
                 'request' => $request
             ]
