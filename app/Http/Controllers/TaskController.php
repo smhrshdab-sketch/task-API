@@ -7,17 +7,20 @@ use App\Http\Requests\UpdateTaskRequest;
 use App\Http\Requests\ViewTaskRequest;
 use App\Models\Account;
 use App\Models\Task;
+use App\Services\AttachmentService;
 use App\Services\AuditLogService;
 use App\Services\TaskService;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class TaskController extends Controller
 {
     protected TaskService $taskService;
+    protected AttachmentService $attachmentService;
 
-    public function __construct(TaskService $taskService){
+    public function __construct(TaskService $taskService,AttachmentService $attachmentService){
         $this->taskService = $taskService;
+        $this->attachmentService = $attachmentService;
     }
     /**
      * Display a listing of the resource.
