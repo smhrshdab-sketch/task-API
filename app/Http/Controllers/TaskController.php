@@ -12,6 +12,7 @@ use App\Services\AuditLogService;
 use App\Services\TaskService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Http\UploadedFile;
 
 class TaskController extends Controller
 {
@@ -176,15 +177,25 @@ class TaskController extends Controller
         logger('task,attachment: ',[$task, $request->file('attachments')]);
         $request->validate([
             'attachments'   => 'required|array|min:1',
-            'attachments.*' => 'file|max:10240',   // هر فایل حداکثر ۱۰ مگابایت
+            'attachments.*' => 'file|max:10240',
         ]);
     
-        $files = $request->file('attachments');   // حالا آرایهای از UploadedFile است
+        $files = $request->file('attachments');
         Log::info('Received files: ', ['count' => count($files)]);
-    
+        $options['is_public'] = true;
+        $options['disk'] = 'public';
+        $options['description'] = null;
         foreach ($files as $file) {
             logger('files: ',[$file->getClientOriginalName()]);
+            if ($file instanceof UploadedFile){
+                $this->attachmentService->createAttachment(                    
+                    $file,
+                    $task, 
+                    $options
+                );
+            }
         }
+        Log::info('attachments are attached'); 
         return response()->json([
             'success' => true,
             'message' => "congragulation you got _addAttachments_ function",
