@@ -6,13 +6,14 @@ use App\Http\Requests\StoreTaskRequest;
 use App\Http\Requests\UpdateTaskRequest;
 use App\Http\Requests\ViewTaskRequest;
 use App\Models\Account;
+use App\Models\Attachment;
 use App\Models\Task;
 use App\Services\AttachmentService;
 use App\Services\AuditLogService;
 use App\Services\TaskService;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Log;
 
 class TaskController extends Controller
 {
@@ -173,8 +174,8 @@ class TaskController extends Controller
         return response()->json(['message' => 'Updated successfully']);
     }
     public function addAttachments(Request $request,Task $task){
-        Log::info('👿 TaskController_addAttachments REACHED 👿');
-        logger('task,attachment: ',[$task, $request->file('attachments')]);
+        //Log::info('👿 TaskController_addAttachments REACHED 👿');
+        //logger('task,attachment: ',[$task, $request->file('attachments')]);
         $request->validate([
             'attachments'   => 'required|array|min:1',
             'attachments.*' => 'file|max:10240',
@@ -198,14 +199,31 @@ class TaskController extends Controller
         Log::info('attachments are attached'); 
         return response()->json([
             'success' => true,
-            'message' => "congragulation you got _addAttachments_ function",
-            'data' => [
-                'task' => [
-                    'id' => $task->id,
-                    'title' => $task->title
-                ],
-                'request' => $request
-            ]
+            'message' => "congragulation you got _addAttachments_ function"
+        ]);
+    }
+    public function removeAttachments(Request $request,Task $task){
+        Log::info('👋 TaskController_removeAttachments REACHED 👋');        
+        $request->validate([
+            'attachments'   => 'required|array|min:1',
+            'attachments.*' => 'integer',
+        ]);
+        $attachmentIds = $request->input('attachments');
+        logger('task,attachment: ',[$task, $attachmentIds]);
+        foreach ($attachmentIds as $id) {
+            logger('attachment id: ',[$id]);
+            $attachment = Attachment::find($id);
+        
+            if ($attachment) {                
+                $this->attachmentService->deleteAttachment(                    
+                    $attachment
+                );
+            }            
+        }
+        Log::info('attachments are deleted'); 
+        return response()->json([
+            'success' => true,
+            'message' => "congragulation you got _removeAttachments_ function"
         ]);
     }
 

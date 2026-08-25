@@ -78,6 +78,8 @@ class AttachmentService{
     }
     //==============
     public function deleteAttachment(Attachment $attachment): void{
+        Log::info('❌ AttachmentService_deleteAttachmentREACHED ❌'); 
+        logger('attachment: ',[$attachment]);
         DB::transaction(function () use ($attachment) {
             if (Storage::disk($attachment->disk)->exists($attachment->file_path)) {
                 Storage::disk($attachment->disk)->delete($attachment->file_path);
