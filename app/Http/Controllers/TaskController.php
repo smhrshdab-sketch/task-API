@@ -129,17 +129,18 @@ class TaskController extends Controller
     }
     //-------------------
     public function attachments(Task $task){
-        $this->authorize('attachments', $task);
-        $attachments = $this->taskService->getAttachments($task);
-        //
+        //$this->authorize('attachments', $task);
+        Log::info('👿 TaskController_attachments REACHED 👿');
+        $attachments = $task->attachments;
+        if($attachments){
+            logger('task,attachment => ',[$task->title,$attachments]);
+        }
+        else{
+            log('there is no attachment for '.$task->title.' task!');
+        }
         return response()->json([
             'success' => true,
             'data' => [
-                'task' => [
-                    'id' => $task->id,
-                    'title' => $task->title,
-                    'department_id' => $task->department_id
-                ],
                 'attachments' => $attachments,
                 'total' => $attachments->count()
             ]
