@@ -15,9 +15,9 @@ return new class extends Migration
             $table->foreignId('organization_id')->constrained()->cascadeOnDelete();
             $table->foreignId('parent_id')->nullable()->constrained('departments')->restrictOnDelete();
             $table->string('title');
-            $table->integer('path')->default(1)->index();
+            $table->integer('sort_order')->default(1)->index();
             $table->enum('status', ['active', 'suspended','inactive'])->default('active');
-            $table->unique(['parent_id', 'path']);
+            $table->unique(['parent_id', 'sort_order']);
             $table->text('description')->nullable();
             $table->timestamps();
         });
