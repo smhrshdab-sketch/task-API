@@ -30,9 +30,9 @@ class DepartmentService{
                 'title' => $data['title'],
                 'description' => $data['description'] ?? null,
                 'status' => $data['status'] ?? 'active',
-                'organization_id' => (int)($data['organization_id'] ?? auth()->user()->organization_id),
-                'parent_id' => $parentIdForDb,
-                'path' => $nextPath,  // Now an integer
+                'organization_id' => $currentDepartment->organization_id,
+                'parent_id' => $currentDepartment->id,
+                'path' => $this->getNextPathNumber($currentDepartment->id),  // Now an integer
             ]);
             $this->getDepartmentList();
             $this->getDepartmentMap();
@@ -180,7 +180,7 @@ class DepartmentService{
         
         return $result;
     }
-     public function getNextPathNumber($parentId){
+    public function getNextPathNumber($parentId){
         $lastSibling = $this->getLastSibling($parentId);
         
         if ($lastSibling) {
