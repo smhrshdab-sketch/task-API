@@ -1,6 +1,7 @@
 <?php
     namespace App\Services;//خیلی ضروری
 
+use App\Models\Department;
 use Illuminate\Support\Facades\Log;
 
     class DepartmentAuthorizationService{
@@ -38,10 +39,36 @@ use Illuminate\Support\Facades\Log;
         public function canDelete(): bool{
             return $this->hasPermission('department_delete');
         }
-        public function canSee(): bool{            
+        public function canSee(Department $target): bool{  
+            if(!isWithinScope($target)){
+                return false;
+            }
             return $this->hasPermission('department_see');
         }
         public function canSeeAll(): bool{            
             return $this->hasPermission('department_view_all');
+        }
+        public function isWithinScope(Department $target): bool{
+            $currentDepartment = current_department();
+
+            if (!$currentDepartment) {
+                return false;
+            }
+
+            if ($currentDepartment->id === $target->id) {
+                return true;
+            }
+
+            $parent = $target->parent;
+
+            while ($parent) {
+                if ($parent->id === $currentDepartment->id) {
+                    return true;
+                }
+
+                $parent = $parent->parent;
+            }
+
+            return false;
         }
     }
