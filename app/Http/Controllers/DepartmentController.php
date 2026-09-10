@@ -8,8 +8,8 @@ use App\Http\Requests\ViewDepartmentRequest;
 use App\Models\Department;
 use App\Services\DepartmentService;
 use Illuminate\Auth\Access\AuthorizationException;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Request;
 
 class DepartmentController extends Controller{
     protected DepartmentService $departmentService;
@@ -215,47 +215,17 @@ class DepartmentController extends Controller{
     public function colleague(Request $request){
          //logger()->info('👓 You are in colleague controller : 💥'); 
         try {
-            $dep = $request::header('X-Department-Id');
-            
-            if (!$dep) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Department ID not provided'
-                ], 400);
-            }
-            //logger('Request: ',[$request]);
-            ///logger('header: ',[$dep ]);
-            //logger('dep: ',[$dep]);
-            // Find the department
-            $department = Department::find($dep);            
-            
-            if (!$department) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Department not found'
-                ], 404);
-            }
-            //logger('departments: ',[$department]);
-            // Get memberships with their accounts
-            $memberships = $department->memberships()
-                ->with('account')  // Eager load account relationship
+            $memberships = current_department()->memberships()
+                ->with('account')
                 ->where('status', 'active')
                 ->get();
-            //logger('memberships: ',[$memberships]);
             $result = [];
             foreach ($memberships as $membership) {
                 $result[] = [
                     'id' => $membership->id,
-                    //'account_id' => $membership->account_id,
                     'title' => $membership->account->name ?? 'Unknown',
-                    //'email' => $membership->account->email ?? '',
-                    //'avatar_path' => $membership->account->avatar_path ?? null,
-                    //'role' => $membership->role->title ?? 'No Role'
                 ];
-            }
-            
-            //logger('(department Controller) colleague: ', [$result]);
-            
+            }    
             return response()->json([
                 'success' => true,
                 'data' => $result,
