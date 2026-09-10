@@ -53,6 +53,10 @@ use Illuminate\Support\Facades\Log;
         public function canViewAll(): bool{            
             return $this->hasPermission('department_view_all');
         }
+        public function canViewAny(): bool{
+            return $this->canViewAll()
+                || $this->hasPermission('department_view');
+        }
         public function isWithinScope(Department $target): bool{
             $currentDepartment = current_department();
 
