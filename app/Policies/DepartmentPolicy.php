@@ -11,28 +11,23 @@ class DepartmentPolicy
     public function __construct(protected DepartmentAuthorizationService $auth) {
         //
     }
+    /*
+        پارامتر اول Account $account در واقع نماینده‌ی کاربر احراز هویت‌شده است.
+
+        Laravel وقتی می‌خواهد Policy را اجرا کند، به‌طور معمول Account/Model احراز هویت‌شده را به عنوان اولین آرگومان متد Policy می‌دهد.
+     */
     /**
      * Determine whether the user can view any models.
      */
     public function viewAny(Account $user): bool{
-        $membership = current_membership();
-        //logger()->info('you are in department Policy(viewAny) and you are: ',[$membership]);
-        if (!$membership) {
-            return false;
-        }
-        return $this->auth->canSeeAll();
+        return $this->auth->canViewAny();
     }
 
     /**
      * Determine whether the user can view the model.
      */
     public function view(Account $account, Department $department): bool{
-        $membership = current_membership();
-        //logger()->info('you are in department Policy and you are: ',[$membership]);
-        if (!$membership) {
-            return false;
-        }
-        return $this->auth->canSee();
+        return $this->auth->canView($department);
     }
 
     /**
@@ -47,10 +42,11 @@ class DepartmentPolicy
         $result =  $this->auth->canCreate();
         if($result){
             logger()->info('you are in department Policy(create) and you can create department: ');
-            return $result;
         }
+        else{
             logger()->info('you are in department Policy(create) and you can NOT create department: ');
-            return $result;
+        }
+        return $result;
     }
 
     /**
