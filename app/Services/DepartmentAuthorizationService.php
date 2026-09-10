@@ -50,7 +50,7 @@ use Illuminate\Support\Facades\Log;
 
             return $this->isWithinScope($target);
         }
-        public function canSeeAll(): bool{            
+        public function canViewAll(): bool{            
             return $this->hasPermission('department_view_all');
         }
         public function isWithinScope(Department $target): bool{
