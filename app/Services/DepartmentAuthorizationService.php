@@ -39,11 +39,16 @@ use Illuminate\Support\Facades\Log;
         public function canDelete(): bool{
             return $this->hasPermission('department_delete');
         }
-        public function canSee(Department $target): bool{  
-            if(!isWithinScope($target)){
+        public function canView(Department $target): bool{
+            if ($this->canViewAll()) {
+                return true;
+            }
+
+            if (!$this->hasPermission('department_view')) {
                 return false;
             }
-            return $this->hasPermission('department_see');
+
+            return $this->isWithinScope($target);
         }
         public function canSeeAll(): bool{            
             return $this->hasPermission('department_view_all');
