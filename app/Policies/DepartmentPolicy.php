@@ -59,13 +59,8 @@ class DepartmentPolicy
     /**
      * Determine whether the user can delete the model.
      */
-    public function delete(Account $user): bool{
-        $membership = current_membership();
-        //logger()->info('you are in department Policy(update) and you are: ',[$membership->account->name]);
-        if (!$membership) {
-            return false;
-        }
-        return $this->auth->canDelete();
+    public function delete(Account $user,Department $department): bool{
+        return $this->auth->canDelete($department);
     }
 
     /**
