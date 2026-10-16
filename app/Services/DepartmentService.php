@@ -290,5 +290,28 @@ class DepartmentService{
                 return $result;
         });
     }
+    //==========
+    public function getVisibleChildren(Department $parent, array $filters = []): LengthAwarePaginator {
+        $perPage = max(
+            1,
+            min((int) ($filters['perPage'] ?? 10), 100)
+        );
+    
+        $query = Department::query()
+            ->where('parent_id', $parent->id)
+            ->where('status', 'active')
+            ->orderBy('path');
+    
+        $search = trim((string) ($filters['search'] ?? ''));
+    
+        if ($search !== '') {
+            $query->where(function ($q) use ($search) {
+                $q->where('title', 'like', "%{$search}%")
+                  ->orWhere('description', 'like', "%{$search}%");
+            });
+        }
+    
+        return $query->paginate($perPage);
+    }
     
 }
