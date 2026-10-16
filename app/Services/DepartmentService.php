@@ -87,18 +87,17 @@ class DepartmentService{
         });//deleteDepartment
     }
     public function deleteDepartment(Department $department): array{
+        return DB::transaction(function () use ($department) {
         $blockers = $department->canBeDeleted();
         
-        if (!empty($blockers)) {
-            return [
-                'success' => false,
-                'blocked' => true,
-                'message' => 'Cannot delete this department because it has related records.',
-                'dependencies' => $blockers
-            ];
-        }
-
-        return DB::transaction(function () use ($department) {
+            if (!empty($blockers)) {
+                return [
+                    'success' => false,
+                    'blocked' => true,
+                    'message' => 'Cannot delete this department because it has related records.',
+                    'dependencies' => $blockers
+                ];
+            }        
             // $parentId = $department->parent_id;
             // $deletedPath = $department->path;
             
@@ -256,7 +255,7 @@ class DepartmentService{
         
         return $this->buildTree($departments);
     }
-    
+
     // In DepartmentService
     public function getDepartmentList(): array{
         $key = 'departments_list';
