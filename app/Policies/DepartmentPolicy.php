@@ -52,13 +52,8 @@ class DepartmentPolicy
     /**
      * Determine whether the user can update the model.
      */
-    public function update(Account $user): bool{
-         $membership = current_membership();
-        //logger()->info('you are in department Policy(update) and you are: ',[$membership->account->name]);
-        if (!$membership) {
-            return false;
-        }
-        return $this->auth->canUpdate();
+    public function update(Account $user,Department $department): bool{
+        return $this->auth->canUpdate($department);
     }
 
     /**
