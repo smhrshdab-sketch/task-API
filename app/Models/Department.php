@@ -147,31 +147,30 @@ class Department extends Model
         $blockers = [];
         
         // Check for sub-departments
-        if ($this->children()->exists()) {
+        $count = $this->children()->count();
+
+        if ($count > 0) {
             $blockers['children'] = [
-                'count' => $this->children()->count(),
+                'count' => $count,
                 'message' => 'sub-departments',
-                'items' => $this->children()->pluck('title')->toArray()
             ];
         }
         
         // Check for members (employees)
-        if ($this->memberships()->exists()) {
+        $count = $this->memberships()->count();
+        if ($count > 0) {
             $blockers['memberships'] = [
-                'count' => $this->memberships()->count(),
-                'message' => 'members assigned to this department',
-                'items' => $this->memberships()->with('account')->get()->map(function($m) {
-                    return $m->account->name;
-                })->toArray()
+                'count' => $count,
+                'message' => 'members assigned',
             ];
         }
         
         // Check for tasks
-        if ($this->tasks()->exists()) {
+        $count = $this->tasks()->count();
+        if ($count > 0) {
             $blockers['tasks'] = [
-                'count' => $this->tasks()->count(),
-                'message' => 'tasks in this department',
-                'items' => $this->tasks()->pluck('title')->toArray()
+                'count' => $count,
+                'message' => 'tasks linked',
             ];
         }
         
