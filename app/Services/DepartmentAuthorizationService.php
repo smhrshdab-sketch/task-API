@@ -33,7 +33,15 @@ use Illuminate\Support\Facades\Log;
         public function canCreate(): bool{
             return $this->hasPermission('department_create');
         }
-        public function canUpdate(): bool{
+        public function canUpdate(Department $target): bool{
+            if (!current_membership()) {
+                return false;
+            }
+        
+            if (!$this->isWithinScope($target)) {
+                return false;
+            }
+        
             return $this->hasPermission('department_update');
         }
         public function canDelete(): bool{
@@ -54,6 +62,9 @@ use Illuminate\Support\Facades\Log;
             return $this->hasPermission('department_view_all');
         }
         public function canViewAny(): bool{
+            if (!current_membership()) {
+                return false;
+            }
             return $this->canViewAll()
                 || $this->hasPermission('department_view');
         }
