@@ -44,7 +44,15 @@ use Illuminate\Support\Facades\Log;
         
             return $this->hasPermission('department_update');
         }
-        public function canDelete(): bool{
+        public function canDelete(Department $target): bool{
+            if (!current_membership()) {
+                return false;
+            }
+        
+            if (!$this->isWithinScope($target)) {
+                return false;
+            }
+        
             return $this->hasPermission('department_delete');
         }
         public function canView(Department $target): bool{
