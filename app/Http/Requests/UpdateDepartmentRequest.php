@@ -12,14 +12,13 @@ class UpdateDepartmentRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        $membership = current_membership();
-        //logger()->info('you are in StoreDepartmentRequest and you are: ',[$membership]);
-        if (!$membership) {
+        $department = $this->route('department');
+
+        if (!$department instanceof Department) {
             return false;
         }
-        //return app(DepartmentPolicy::class)->create();
-        //return $membership->account->can('create', Department::class);اسم کلاس را برمی گرداند 
-        return $membership->account->can('create', new Department());
+
+        return $this->user()->can('update', $department);
     }
 
     /**
@@ -30,19 +29,14 @@ class UpdateDepartmentRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'organization_id' => 'required|exists:organizations,id',
-            'parent_id' => 'nullable|exists:departments,id',
             'title' => 'required|string|max:255',
             'description' => 'nullable|string',
-            'status' => 'nullable|string'
+            //'status' => 'nullable|string'
         ];
     }
     public function messages(): array
     {
         return [
-            'organization_id.required' => 'Organization ID is required',
-            'organization_id.exists' => 'The selected organization does not exist',
-            'parent_id.exists' => 'The selected parent department does not exist',
             'title.required' => 'Department title is required',
         ];
     }
