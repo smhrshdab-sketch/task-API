@@ -133,7 +133,7 @@ class DepartmentController extends Controller{
             'success' => true,
             'data' => $department,
             'message' => 'Department is updated successfully'
-        ], 201);
+        ], 200);
     }
 
     /**
