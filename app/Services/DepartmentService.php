@@ -99,10 +99,10 @@ class DepartmentService{
         }
 
         return DB::transaction(function () use ($department) {
-            $parentId = $department->parent_id;
-            $deletedPath = $department->path;
+            // $parentId = $department->parent_id;
+            // $deletedPath = $department->path;
             
-            $department->delete($department->id);
+            $department->delete();
             Log::info('Department deleted', [
                 'department_id' => $department->id,
                 'title' => $department->title
@@ -256,17 +256,7 @@ class DepartmentService{
         
         return $this->buildTree($departments);
     }
-
-    public function getDeletionPreview(Department $department): array{
-        return [
-            'department' => [
-                'id' => $department->id,
-                'title' => $department->title
-            ],
-            'dependencies' => $department->canBeDeleted(),
-            'is_deletable' => $department->isDeletable()
-        ];
-    }
+    
     // In DepartmentService
     public function getDepartmentList(): array{
         $key = 'departments_list';
