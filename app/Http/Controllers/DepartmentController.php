@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreDepartmentRequest;
 use App\Http\Requests\UpdateDepartmentRequest;
-use App\Http\Requests\ViewDepartmentRequest;
+use App\Http\Requests\ListDepartmentRequest;
 use App\Models\Department;
 use App\Services\DepartmentService;
 use Illuminate\Auth\Access\AuthorizationException;
@@ -20,40 +20,35 @@ class DepartmentController extends Controller{
     /**
      * Display a listing of the resource.
      */
-    public function index(ViewDepartmentRequest $request){
-        $perPage = $request->input('limit', 30);
-        $search = $request->input('search', '');
-        $parentId = $request->input('parentId', null);
-        Log::info('DepartmentController@index called', [
-            'per_page' => $perPage,
-            'search' => $search,
-            'parent_id' => $parentId
-        ]);
-        //logger('index(controller_department): search,perPage,parentId',[$search,$perPage,$parentId]);
-        try {
-            $departments = $this->departmentService->getAllDepartmentsWithPagination([
-                'perPage' => $perPage,
-                'search' => $search,
-                'parentId' => $parentId
-            ]);
-            
-            return response()->json([
+    public function index(ListDepartmentRequest $request){
+        $parentId = $request->query('parentId');
+
+        if ($parentId === null || $parentId === '') {
+            $parent = current_department();
+        } else {
+            $parent = Department::findOrFail($parentId);
+        }
+
+        $this->authorize('view', $parent);
+
+        $departments = $this->departmentService->getVisibleChildren(
+            $parent,
+            [
+                'perPage' => $request->input('limit', 10),
+                'search' => $request->input('search', ''),
+            ]
+        );
+
+        return response()->json([
             'success' => true,
-            'data' => $departments->items(),        // Current page items
+            'data' => $departments->items(),
             'current_page' => $departments->currentPage(),
             'last_page' => $departments->lastPage(),
             'per_page' => $departments->perPage(),
             'total' => $departments->total(),
             'from' => $departments->firstItem(),
-            'to' => $departments->lastItem()
+            'to' => $departments->lastItem(),
         ]);
-            
-        } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Failed to retrieve departmenta'
-            ], 500);
-        }
     }
 
     /**
@@ -64,7 +59,7 @@ class DepartmentController extends Controller{
         // $membership = current_membership();
         // if (!$membership) {
         //     return false;
-        // }
+        // }viewAny
         // $membership->account->can('create', new Department());
         //logger('CREATE department controller authorize is : ',[$auth]);
         // User sees form only if authorized
@@ -108,41 +103,14 @@ class DepartmentController extends Controller{
     /**
      * Display the specified resource.
      */
-    public function show(ViewDepartmentRequest $request,Department $department){
-        $perPage = $request->input('limit', 10);
-        $search = $request->input('search', '');
-        $parentId = $department->id;
-        //logger('show(DepartmentController):,search,perPage',[$search,$perPage,$parentId,$department]);
-        try {
-            // Authorize - Check if user can view this department
-            
-            $departments = $this->departmentService->getAllDepartmentsWithPagination([
-                'perPage' => $perPage,
-                'search' => $search,
-                'parentId' => $parentId
-            ]);
-            
-            return response()->json([
-                'success' => true,
-                'department' => $department,
-                'message' => 'Department retrieved successfully',
-                'sub_departments' => $departments->items(),
-                'current_page' => $departments->currentPage(),
-                'last_page' => $departments->lastPage(),
-                'per_page' => $departments->perPage(),
-                'total' => $departments->total(),
-                'from' => $departments->firstItem(),
-                'to' => $departments->lastItem()
-            ], 200);
-            
-        } catch (AuthorizationException $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'You do not have permission to view this department',
-                'error' => $e->getMessage()
-            ], 403);
-            
-        } 
+    public function show(Department $department){
+        $this->authorize('view', $department);
+
+        return response()->json([
+            'success' => true,
+            'data' => $department,
+            'message' => 'Department retrieved successfully',
+        ]);
     }
 
     /**
