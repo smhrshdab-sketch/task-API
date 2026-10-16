@@ -5,7 +5,7 @@ namespace App\Http\Requests;
 use App\Models\Department;
 use Illuminate\Foundation\Http\FormRequest;
 
-class ViewDepartmentRequest extends FormRequest
+class ListDepartmentRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -18,8 +18,6 @@ class ViewDepartmentRequest extends FormRequest
                 return false;
             }
         $result = $membership->account->can('viewAny',Department::class);
-        //logger("update authorize",[$membership,$result]);
-        logger("viewAny authorize",[$result]);
         return $result;
     }
 
