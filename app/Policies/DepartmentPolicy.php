@@ -53,6 +53,10 @@ class DepartmentPolicy
      * Determine whether the user can update the model.
      */
     public function update(Account $user,Department $department): bool{
+        if ($department->parent_id === null) {
+            return $this->auth->canUpdateRoot($department);
+        }
+    
         return $this->auth->canUpdate($department);
     }
 
