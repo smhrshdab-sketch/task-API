@@ -64,38 +64,21 @@ class Membership extends Model
         return $this->hasMany(AuditLog::class, 'causer_id', 'id');
     }
     //======== Accessors ========
-    public function getEffectivePermissionsAttribute(): array{
-        $base = $this->role->permissions;
-        //logger('(membership) base: ',[$base]);
-        if (is_string($base)) {
-            //logger('(membership) base is string. Now decode to JSON');
-            $base = json_decode($base, true) ?? [];
-        }
+    public function getEffectivePermissions(): array
+    {
+        $rolePermissions = $this->role
+            ->permissions
+            ->pluck('slug')
+            ->all();
 
-        if (!is_array($base)) {
-            logger()->error('Invalid permissions format for role', [
-                'role_id' => $this->role->id ?? null,
-                'actual_value' => $base,
-                'type' => gettype($base)
-            ]);     
-            // یا throw exception
-            //throw new Exception('Role permissions must be array or JSON string');      
-            // یا حداقل حفظ کردن overrideها بدون از دست رفتن context
-            $base = [];
-            //logger('(membership) finall base is: ',[$base]);
-        }
-        //logger('(membership) permissions_override is: ',[$this->permissions_override]);
-        if(!is_array($this->permissions_override)){
-            $casted = json_decode($this->permissions_override,true);
-        }
-        else{
-            $casted = $this->permissions_override;
-        }
-        foreach ($casted ?? [] as $key => $value) {
-            $base[$key] = $value;
-        }
-        //logger('(membership) finall base is: ',[$base]);
-        return $base;
+        $overrides = $this->permissions_override ?? [];
+
+        return array_values(
+            array_unique([
+                ...$rolePermissions,
+                ...$overrides,
+            ])
+        );
     }
     //full name with role
     public function getDisplayNameAttribute(){
@@ -120,5 +103,13 @@ class Membership extends Model
         );
         // //dd('$key',$key,'CachedPermissions',$CachedPermissions);
         // return $CachedPermissions;
+    }
+    //============
+    public function hasPermission(string $permission): bool{
+        return in_array(
+            $permission,
+            $this->getEffectivePermissions(),
+            true
+        );
     }
 }
