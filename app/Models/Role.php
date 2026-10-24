@@ -13,19 +13,8 @@ class Role extends Model
     protected $fillable = [
         'title',
         'slug',
-        'permissions',
         'description',
     ];
-    protected $casts = [
-        //'permissions' => 'json',
-    ];
-    //=================
-    /*public function setPermissionsAttribute($value){
-        if (is_string($value)) {
-            $value = json_decode($value, true);
-        }
-        $this->attributes['permissions'] = json_encode($value);
-    }*/
     //============
     public const MANAGER = 'Manager';
     //============
