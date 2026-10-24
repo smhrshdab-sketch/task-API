@@ -20,7 +20,7 @@ return new class extends Migration
                 ->constrained('roles')
                 ->nullOnDelete();
             $table->text('description')->nullable();
-            $table->json('permissions')->nullable();
+            //$table->json('permissions')->nullable();
             $table->timestamps();
         });
     }
