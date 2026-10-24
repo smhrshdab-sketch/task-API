@@ -13,13 +13,16 @@ return new class extends Migration
     {
         Schema::create('permissions', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('role_id')->constrained('roles')->restrictOnDelete();
+
+            $table->string('slug')->unique();
+        
             $table->string('target');
             $table->string('subject');
-            $table->boolean('permit')->default(false);
-            //-----------------------------
-            $table->string('status')->nullable();
+        
             $table->string('description')->nullable();
+        
+            $table->boolean('is_active')->default(true);
+        
             $table->timestamps();
         });
     }
