@@ -25,7 +25,11 @@ class StoreMembershipRequest extends FormRequest
             'department_id' => ['nullable', 'exists:departments,id'],
             'role_id' => ['required', 'exists:roles,id'],
             'status' => ['required', 'in:active,suspended'],
-            'permissions_override' => ['nullable', 'json']
+            'permissions_override' => ['nullable', 'array'],
+            'permissions_override.*' => [
+                'string',
+                'exists:permissions,slug',
+            ],
         ];
     }
      public function messages(): array{
