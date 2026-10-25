@@ -7,8 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Auth\Access\Authorizable;
 use Illuminate\Support\Facades\Cache;
 
-class Membership extends Model
-{
+class Membership extends Model{
     /** @use HasFactory<\Database\Factories\MembershipFactory> */
     use HasFactory,Authorizable;
     protected $table = 'memberships';
@@ -22,34 +21,26 @@ class Membership extends Model
         'permissions_override'
     ];
     protected $casts = [
-        // 'permissions' => 'array',
-        // 'permissions_override' => 'array',
+        'permissions_override' => 'array',
     ];
     //-----------------
     public function role(){
         return $this->belongsTo(Role::class);
     }
     public function account(){
-        //logger('IN => Model->membership->account');
-        $rel = $this->belongsTo(Account::class);
-        //logger('==> account: ',[$rel]);
-        return $rel;
+        return $this->belongsTo(Account::class);
     }
     public function department(){
         return $this->belongsTo(Department::class);
     }
     public function engage(){
-        //logger('IN => Model->membership->engage');
-        $rel =  $this->hasMany(Engage::class,'contributor');//بدون مشخص کردن ستون مشترک(ی که اسم متفاوتی داره!) رابطه کار نمیکند
-        //logger('result: ',[$rel]);
-        return $rel;
+        return $this->hasMany(Engage::class,'contributor');
     }
     public function ownTasks(){
-        return $this->hasMany(Task::class,'assignee_id');//بدون مشخص کردن ستون مشترک(ی که اسم متفاوتی داره!) رابطه کار نمیکند
+        return $this->hasMany(Task::class,'assignee_id');
     }
     public function inTasks(){
-        //logger('IN => Model->membership->inTasks');
-        $rel = $this->hasManyThrough(
+        return $this->hasManyThrough(
             Task::class,
             Engage::class,
             'task',        // ✅ Engage.task → Task.id
@@ -57,8 +48,6 @@ class Membership extends Model
             'id',          // ✅ Membership.id
             'contributor'  // ✅ Engage.contributor → Membership.id
         );
-        //logger('result: ',[$rel]);
-        return $rel;
     }
     public function auditLogs(){
         return $this->hasMany(AuditLog::class, 'causer_id', 'id');
@@ -67,9 +56,10 @@ class Membership extends Model
     public function getEffectivePermissions(): array
     {
         $rolePermissions = $this->role
-            ->permissions
-            ->pluck('slug')
-            ->all();
+        ->permissions()
+        ->where('is_active', true)
+        ->pluck('slug')
+        ->all();
 
         $overrides = $this->permissions_override ?? [];
 
@@ -92,17 +82,6 @@ class Membership extends Model
         }
         // یا اگر دپارتمانِ عضویت، والدِ دپارتمانِ تسک است
         return $this->department->isAncestorOf($dept);
-    }
-    //===========
-    public function getCachedPermissions(): array{
-        $key = "permissions:membership:{$this->id}";
-        return Cache::remember($key, now()->addMinutes(30), fn () =>
-            is_array($this->effective_permissions)
-                ? $this->effective_permissions
-                : []
-        );
-        // //dd('$key',$key,'CachedPermissions',$CachedPermissions);
-        // return $CachedPermissions;
     }
     //============
     public function hasPermission(string $permission): bool{
