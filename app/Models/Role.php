@@ -15,12 +15,7 @@ class Role extends Model
         'slug',
         'description',
     ];
-    //============
-    public const MANAGER = 'Manager';
-    //============
-    public function accounts(){
-        return $this->belongsToMany(Account::class);
-    }  
+    //============ 
     public function memberships(){
         return $this->hasMany(Membership::class);
     }
@@ -34,9 +29,5 @@ class Role extends Model
 
     public function permissions(){
         return $this->belongsToMany(Permission::class);
-    }
-    public function getRoleCache(Role $role): array{
-        $key = "role_{$role->id}";
-        return Cache::remember($key, now()->addMinutes(30),$role->slug);
     }
 }
