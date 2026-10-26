@@ -51,35 +51,6 @@ class Account extends Authenticatable implements JWTSubject
             'pv' => $this->permissions_version,
         ];
     }
-    //محاسبه کلیه حق دسترسی ها(استاندارد + استثنا) برای یک حساب خاص و ذخیره یا بازیابی آن برای 30دقیقه در کش
-    public function getAllPermissions(): array{
-        return cache()->remember(
-            "user_permissions_{$this->id}",
-            now()->addMinutes(30),
-            function () {
-                $permissions = [];
-
-                foreach ($this->memberships as $membership) {
-
-                    // permissions role
-                    $permissions = array_merge(
-                        $permissions,
-                        $membership->role->permissions ?? []
-                    );
-
-                    // override permissions
-                    if (is_array($membership->permissions_override)) {
-                        $permissions = array_merge(
-                            $permissions,
-                            $membership->permissions_override
-                        );
-                    }
-                }
-
-                return array_unique($permissions);
-            }
-        );
-    }
     //چک کردن یک حق دسترسی در میان کل حق دسترسی ها(ی کاربر خاص)
     public function hasPermission(string $permission): bool{
         return in_array($permission, $this->getAllPermissions());
