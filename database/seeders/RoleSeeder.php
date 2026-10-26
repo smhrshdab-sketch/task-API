@@ -3,9 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\Role;
-use Illuminate\Support\Str;
 use Illuminate\Database\Seeder;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 
 class RoleSeeder extends Seeder
 {
@@ -21,10 +19,12 @@ class RoleSeeder extends Seeder
         ];
 
         foreach ($roles as $role) {
-            Role::create([
-                'title' => ucfirst($role),
-                'slug'  => Str::slug($role),
-            ]);
+            Role::updateOrCreate(
+                ['slug' => $role],
+                [
+                    'title' => ucfirst($role),
+                ]
+            );
         }
     }
 }
