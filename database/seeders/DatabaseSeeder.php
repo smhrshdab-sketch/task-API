@@ -29,8 +29,10 @@ class DatabaseSeeder extends Seeder
 
         $this->call([
                 RoleSeeder::class,
+                PermissionSeeder::class,
+                RolePermissionSeeder::class,
             ]);
-
+        
         foreach ($departments as $department) {
             $accounts = Account::factory(5)->create();
 
