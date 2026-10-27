@@ -18,13 +18,15 @@ class RoleSeeder extends Seeder
             'operator',
         ];
 
-        foreach ($roles as $role) {
-            Role::updateOrCreate(
-                ['slug' => $role],
-                [
-                    'title' => ucfirst($role),
-                ]
-            );
-        }
+        Role::withoutEvents(function () use ($roles) {
+            foreach ($roles as $role) {
+                Role::updateOrCreate(
+                    ['slug' => $role],
+                    [
+                        'title' => ucfirst($role),
+                    ]
+                );
+            }
+        });
     }
 }
