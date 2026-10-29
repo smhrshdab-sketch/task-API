@@ -27,6 +27,9 @@ class Membership extends Model{
     public function role(){
         return $this->belongsTo(Role::class);
     }
+    public function permissions(){
+        return $this->belongsToMany(Permission::class);
+    }
     public function account(){
         return $this->belongsTo(Account::class);
     }
@@ -53,20 +56,22 @@ class Membership extends Model{
         return $this->hasMany(AuditLog::class, 'causer_id', 'id');
     }
     //======== Accessors ========
-    public function getEffectivePermissions(): array
-    {
+    public function getEffectivePermissions(): array{
         $rolePermissions = $this->role
-        ->permissions()
-        ->where('is_active', true)
-        ->pluck('slug')
-        ->all();
+            ->permissions()
+            ->where('is_active', true)
+            ->pluck('slug')
+            ->all();
 
-        $overrides = $this->permissions_override ?? [];
+        $membershipPermissions = $this->permissions
+            ->where('is_active', true)
+            ->pluck('slug')
+            ->all();
 
         return array_values(
             array_unique([
                 ...$rolePermissions,
-                ...$overrides,
+                ...$membershipPermissions,
             ])
         );
     }
