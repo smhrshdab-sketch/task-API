@@ -4,6 +4,7 @@ namespace App\Policies;
 
 use App\Models\Account;
 use App\Models\Membership;
+use App\Models\Permission;
 use App\Services\MembershipAuthorizationService; 
 
 class MembershipPolicy
@@ -54,7 +55,12 @@ class MembershipPolicy
     public function delete(Account $user, Membership $membership): bool{
         return $this->auth->canDelete();
     }
-
+    /*
+     * Determine whether the user can delegate a permission to a membership.
+     */
+    public function delegate(Account $user, Permission $permission, Membership $membership): bool{
+        return $this->auth->canDelegate($permission,$membership);
+    }
     /**
      * Determine whether the user can restore the model.
      */
