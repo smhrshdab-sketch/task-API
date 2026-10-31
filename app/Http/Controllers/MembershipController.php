@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\DelegatePermissionRequest;
 use App\Http\Requests\StoreMembershipRequest;
 use App\Http\Requests\UpdateMembershipRequest;
 use App\Http\Requests\ViewMembershipsRequest;
 use App\Models\Membership;
+use App\Models\Permission;
 use App\Services\AuditLogService;
 use App\Services\DepartmentService;
 use App\Services\MembershipService;
@@ -164,5 +166,20 @@ class MembershipController extends Controller
             'success' => true,
             'message' => 'Membership deleted successfully'
         ], 201);
+    }
+    /*
+     * 
+     */
+    public function delegatePermission(
+        DelegatePermissionRequest $request,
+        Membership $membership,
+        Permission $permission
+    ) {
+        $this->membershipService->delegatePermission(
+            $membership,
+            $permission
+        );
+    
+        return response()->noContent();
     }
 }
