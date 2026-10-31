@@ -40,6 +40,8 @@ use Tymon\JWTAuth\Facades\JWTAuth;
         Route::get('membership', [MembershipController::class, 'index'])->name("membership_list");
         Route::get('membership/{membership}', [MembershipController::class, 'show'])->name("membership_detail");
         Route::delete('membership/{membership}', [MembershipController::class, 'destroy'])->name("membership_delete");
+        Route::post('/memberships/{membership}/permissions/{permission}',[MembershipController::class, 'delegatePermission']
+        );
 
         //========== Account ===========
         Route::put('account/{account}', [AccountController::class, 'update'])->name("account_update");
