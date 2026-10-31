@@ -3,10 +3,11 @@
 namespace App\Services;
 
 use App\Models\Membership;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
+use App\Models\Permission;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class MembershipService
 {
@@ -111,5 +112,23 @@ class MembershipService
 
         return $memberships;
     }
+    //===============
+    public function delegatePermission(
+        Membership $membership,
+        Permission $permission
+    ): void {
+        DB::transaction(function () use ($membership, $permission) {
+            $membership->permissions()->syncWithoutDetaching([
+                $permission->id,
+            ]);
+        });
+    }
+    /*
+     می تونستیم از تابع 
+     attach
+     هم استفاده کنیم. اما چون امکان ایجاد رکورد تکراری وجود دارد و وظیف کنترل آن برعهدده برنامه نویس است پس از
+      syncWithoutDetaching
+      استفاده کردم که خودکار عملیات لازم رو برایم انجام دهد.
+     */
 
 }
