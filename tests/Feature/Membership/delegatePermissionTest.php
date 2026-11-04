@@ -215,7 +215,7 @@ class DelegatePermissionTest extends TestCase{
             "api/memberships/{$operatorMembership->id}/permissions/{$updatePermission->id}"     //ای پی آی برای به حرکت در آوردن کنترلر با همین ورودی ها
         );
 
-        $response->assertNoContent();
+        $response->assertForbidden();
         // dd([
         //     'status' => $response->status(),
         //     'body' => $response->json(),
