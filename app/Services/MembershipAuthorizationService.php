@@ -3,32 +3,16 @@
 
 use App\Models\Membership;
 use App\Models\Permission;
-use Illuminate\Support\Facades\Log;
 
     class MembershipAuthorizationService{
         protected function hasPermission(string $permission): bool{
-            $permissions = current_membership()->getCachedPermissions();
-            if (array_key_exists('admin', $permissions) && $permissions['admin'] === true) {
-                return true;
-            }
-            
-            // Check for wildcard permission
-            if (array_key_exists('*', $permissions) && $permissions['*'] === true) {
-                return true;
-            }
-            if (array_key_exists($permission, $permissions)) {
-                return $permissions[$permission] === true;
-            }
-            if(in_array($permission, $permissions, true)){
-                return true;
+            $membership = current_membership();
+
+            if (!$membership) {
+                return false;
             }
 
-            Log::warning('MembershipAuthorizationService: No '.$permission.' permission', [
-                'membership_id' => current_membership()->id,
-                'permissions' => $permissions
-            ]);
-        
-            return false;
+            return $membership->hasPermission($permission);
         }
         //---------------------------------------------
         public function canCreate(): bool{
@@ -48,9 +32,11 @@ use Illuminate\Support\Facades\Log;
         }
         //==========================================
         public function isWithinScope(Membership $target): bool{
+            logger(" -- isWithinScope -- ");
             $currentDepartment = current_department();
 
             if (!$currentDepartment) {
+                logger("currentDepartment is not set");
                 return false;
             }
             $departmentTarget = $target->department;
@@ -67,20 +53,24 @@ use Illuminate\Support\Facades\Log;
 
                 $parent = $parent->parent;
             }
-
+            logger("membership and target are not in same scope");
             return false;
         }
         public function canDelegate(Permission $permission, Membership $membership): bool{
-            if (! $permission->is_delegable) {
-            return false;
+            logger(" -- canDelegate -- ");
+            if (!$permission->is_delegable) {
+                logger("permision is not able to delegable");
+                return false;
             }
 
-            if (! $this->hasPermission('membership_manage_permissions')) {
-            return false;
+            if (!$this->hasPermission('membership_manage_permissions')) {
+                logger("membership has not the membership_manage_permissions permission");
+                return false;
             }
 
-            if (! $this->hasPermission($permission->slug)) {
-            return false;
+            if (!$this->hasPermission($permission->slug)) {
+                logger("membership has not the permission permission");
+                return false;
             }
 
             return $this->isWithinScope($membership);
