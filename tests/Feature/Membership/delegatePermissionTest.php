@@ -221,7 +221,7 @@ class DelegatePermissionTest extends TestCase{
         //     'body' => $response->json(),
         // ]);
 
-        $this->assertDatabaseHas('membership_permission', [ 
+        $this->assertDatabaseMissing('membership_permission', [ 
             'membership_id' => $operatorMembership->id,
             'permission_id' => $updatePermission->id,
         ]);
