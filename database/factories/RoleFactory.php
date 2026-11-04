@@ -21,7 +21,7 @@ class RoleFactory extends Factory
         return [
             'title'       => $title,
             'slug'        => Str::slug($title),
-            'permissions' => json_encode([]),
+            //'permissions' => json_encode([]),
         ];
     }
 }
