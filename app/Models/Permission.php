@@ -13,7 +13,8 @@ class Permission extends Model{
         'target',
         'subject',
         'is_active',
-        'description'
+        'description',
+        'is_delegable'
     ];
     protected $casts = [
         'is_active' => 'boolean',
