@@ -11,7 +11,7 @@ return new class extends Migration {
             $table->id();
             
             $table->nullableMorphs('subject');  // the record that changed
-            $table->foreignId('causer_id')->constrained('memberships')->restrictOnDelete();
+            $table->foreignId('causer_id')->nullable()->constrained('memberships')->restrictOnDelete();
             
             // No separate membership_id column needed!
             
