@@ -2,65 +2,67 @@
 
 namespace App\Policies;
 
+use App\Models\Account;
+use App\Models\Membership;
 use App\Models\Permission;
 use App\Models\User;
-use Illuminate\Auth\Access\Response;
+use App\Services\MembershipAuthorizationService;
 
-class PermissionPolicy
-{
+class PermissionPolicy{
+    public function __construct(protected MembershipAuthorizationService $auth){
+        //
+    }
     /**
      * Determine whether the user can view any models.
      */
-    public function viewAny(User $user): bool
-    {
+    public function viewAny(User $user): bool{
         return false;
     }
 
     /**
      * Determine whether the user can view the model.
      */
-    public function view(User $user, Permission $permission): bool
-    {
+    public function view(User $user, Permission $permission): bool{
         return false;
     }
 
     /**
      * Determine whether the user can create models.
      */
-    public function create(User $user): bool
-    {
+    public function create(User $user): bool{
         return false;
     }
 
     /**
      * Determine whether the user can update the model.
      */
-    public function update(User $user, Permission $permission): bool
-    {
+    public function update(User $user, Permission $permission): bool{
         return false;
     }
 
     /**
      * Determine whether the user can delete the model.
      */
-    public function delete(User $user, Permission $permission): bool
-    {
+    public function delete(User $user, Permission $permission): bool{
         return false;
     }
 
     /**
      * Determine whether the user can restore the model.
      */
-    public function restore(User $user, Permission $permission): bool
-    {
+    public function restore(User $user, Permission $permission): bool{
         return false;
     }
 
     /**
      * Determine whether the user can permanently delete the model.
      */
-    public function forceDelete(User $user, Permission $permission): bool
-    {
+    public function forceDelete(User $user, Permission $permission): bool{
         return false;
+    }
+    //=========
+    public function delegate(Account $user, Permission $permission, Membership $membership): bool{
+        //logger(" -- MembershipPolicy -- ",[$permission,$membership]);
+        return $this->auth->canDelegate($permission,$membership);
     }
 }
