@@ -4,20 +4,17 @@ namespace App\Policies;
 
 use App\Models\Account;
 use App\Models\Membership;
-use App\Models\Permission;
 use App\Services\MembershipAuthorizationService; 
 
-class MembershipPolicy
-{
-    public function __construct(protected MembershipAuthorizationService $auth)
-    {
+class MembershipPolicy{
+    
+    public function __construct(protected MembershipAuthorizationService $auth){
         //
     }
     /**
      * Determine whether the user can view any models.
      */
-    public function viewAny(Account $user): bool
-    {
+    public function viewAny(Account $user): bool{
         logger("viewAny MembershipPolicy");
         return $this->auth->canSeeAll();
     }
@@ -25,8 +22,7 @@ class MembershipPolicy
     /**
      * Determine whether the user can view the model.
      */
-    public function view(Account $user,Membership $membership): bool
-    {
+    public function view(Account $user,Membership $membership): bool{
         $crnt_acnt = current_membership();
         if (!$crnt_acnt) {
             return false;
@@ -37,8 +33,7 @@ class MembershipPolicy
     /**
      * Determine whether the user can create models.
      */
-    public function create(Account $user): bool
-    {
+    public function create(Account $user): bool{
         return false;
     }
 
@@ -55,25 +50,17 @@ class MembershipPolicy
     public function delete(Account $user, Membership $membership): bool{
         return $this->auth->canDelete();
     }
-    /*
-     * Determine whether the user can delegate a permission to a membership.
-     */
-    public function delegate(Account $user, Permission $permission, Membership $membership): bool{
-        return $this->auth->canDelegate($permission,$membership);
-    }
     /**
      * Determine whether the user can restore the model.
      */
-    public function restore(Account $user, Membership $membership): bool
-    {
+    public function restore(Account $user, Membership $membership): bool{
         return false;
     }
 
     /**
      * Determine whether the user can permanently delete the model.
      */
-    public function forceDelete(Account $user, Membership $membership): bool
-    {
+    public function forceDelete(Account $user, Membership $membership): bool{
         return false;
     }
 }
