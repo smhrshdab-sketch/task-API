@@ -106,7 +106,16 @@ class Department extends Model
     }
 
     public static function getNextPath($parentId): int{
-        $maxPath = static::where('parent_id','=', $parentId,true)->max('path');
+        $query = static::query();
+
+        if ($parentId === null) {
+            $query->whereNull('parent_id');
+        } else {
+            $query->where('parent_id', $parentId);
+        }
+
+        $maxPath = $query->max('path');
+
         return $maxPath ? $maxPath + 1 : 1;
     }
 
