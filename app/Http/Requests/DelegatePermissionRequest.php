@@ -25,8 +25,17 @@ class DelegatePermissionRequest extends FormRequest
 			if (!$membership instanceof Membership) {
 			    return false;
 			}
-
-			return $this->user()->can('delegate', $permission,$membership );
+             // dd([
+            //     'user' => get_class($this->user()),
+            //     'permission' => get_debug_type($permission),
+            //     'membership' => get_debug_type($membership),
+            //     'permission_policy' => Gate::getPolicyFor(Permission::class),
+            //     'membership_policy' => Gate::getPolicyFor(Membership::class),
+            // ]);
+			return $this->user()->can(
+                'delegate',
+                [$permission, $membership]
+            );
     }
 
     /**
