@@ -226,4 +226,216 @@ class DelegatePermissionTest extends TestCase{
             'permission_id' => $updatePermission->id,
         ]);
     }
+    //
+    public function test_cannot_delegate_non_manage_permissions_permission(){
+        $org = Organization::withoutEvents(function () {  
+            return Organization::factory()->create();
+        });
+        
+        $account1 = Account::factory()->create([
+            'organization_id' => $org->id,      
+        ]);
+        
+        $account2 = Account::factory()->create([
+            'organization_id' => $org->id,
+        ]);        
+
+        $rootDep = Department::factory()->create([
+            'organization_id' => $org->id,
+        ]);
+        $firstLevelDepartment = Department::factory()->create([
+            'organization_id' => $org->id,
+            'parent_id' => $rootDep->id,
+        ]);
+        $secondLevelDepartment = Department::factory()->create([
+            'organization_id' => $org->id,
+            'parent_id' => $firstLevelDepartment->id,
+        ]);
+        //===============
+        $viewPermission = Permission::factory()->create([
+            'slug' => 'department_view',
+            'target' => 'department',
+            'subject' => 'view',
+            'is_delegable' => true,
+        ]);
+        
+        $updatePermission = Permission::factory()->create([
+            'slug' => 'department_update',
+            'target' => 'department',
+            'subject' => 'update',
+            'is_delegable' => true,
+        ]);
+        
+        $managePermissions = Permission::factory()->create([
+            'slug' => 'membership_manage_permissions',
+            'target' => 'membership',
+            'subject' => 'manage_permissions',
+            'is_delegable' => false,
+        ]);
+        //============================
+        $managerRole = Role::factory()->create([
+            'title' => 'Manager',
+            'slug' => 'manager',
+        ]);
+        
+        $operatorRole = Role::factory()->create([
+            'title' => 'Operator',
+            'slug' => 'operator',
+        ]);
+        //=============================
+        $managerRole->permissions()->attach([ 
+            $viewPermission->id,
+            $updatePermission->id,
+        ]);
+        
+        $operatorRole->permissions()->attach([      
+            $viewPermission->id,
+        ]);
+        //----------------------------
+        $managerMembership = Membership::factory()->create([
+            'account_id' => $account1->id,
+            'organization_id' => $org->id,
+            'department_id' => $firstLevelDepartment->id,
+            'role_id' => $managerRole->id,
+            'status' => 'active',
+        ]);
+        $operatorMembership = Membership::factory()->create([
+            'account_id' => $account2->id,
+            'organization_id' => $org->id,
+            'department_id' => $secondLevelDepartment->id,
+            'role_id' => $operatorRole->id,
+            'status' => 'active',
+        ]);        
+        //=============================
+        $this->assertDatabaseHas('memberships', [ 
+            'id' => $managerMembership->id,
+            'account_id' => $account1->id,
+            'department_id' => $firstLevelDepartment->id,
+        ]);
+        //=============================
+        $response = $this->actingAs($account1, 'api')  
+        ->withHeader(
+            'X-Department-Id',    
+            $firstLevelDepartment->id
+        )->postJson(
+            "api/memberships/{$operatorMembership->id}/permissions/{$updatePermission->id}"     //ای پی آی برای به حرکت در آوردن کنترلر با همین ورودی ها
+        );
+
+        $response->assertForbidden();
+        // dd([
+        //     'status' => $response->status(),
+        //     'body' => $response->json(),
+        // ]);
+
+        $this->assertDatabaseMissing('membership_permission', [ 
+            'membership_id' => $operatorMembership->id,
+            'permission_id' => $updatePermission->id,
+        ]);
+    }
+    //
+    public function test_cannot_delegate_permission_without_the_permission(){
+        $org = Organization::withoutEvents(function () {  
+            return Organization::factory()->create();
+        });
+        
+        $account1 = Account::factory()->create([
+            'organization_id' => $org->id,      
+        ]);
+        
+        $account2 = Account::factory()->create([
+            'organization_id' => $org->id,
+        ]);        
+
+        $rootDep = Department::factory()->create([
+            'organization_id' => $org->id,
+        ]);
+        $firstLevelDepartment = Department::factory()->create([
+            'organization_id' => $org->id,
+            'parent_id' => $rootDep->id,
+        ]);
+        $secondLevelDepartment = Department::factory()->create([
+            'organization_id' => $org->id,
+            'parent_id' => $firstLevelDepartment->id,
+        ]);
+        //===============
+        $viewPermission = Permission::factory()->create([
+            'slug' => 'department_view',
+            'target' => 'department',
+            'subject' => 'view',
+            'is_delegable' => true,
+        ]);
+        
+        $updatePermission = Permission::factory()->create([
+            'slug' => 'department_update',
+            'target' => 'department',
+            'subject' => 'update',
+            'is_delegable' => true,
+        ]);
+        
+        $managePermissions = Permission::factory()->create([
+            'slug' => 'membership_manage_permissions',
+            'target' => 'membership',
+            'subject' => 'manage_permissions',
+            'is_delegable' => false,
+        ]);
+        //============================
+        $managerRole = Role::factory()->create([
+            'title' => 'Manager',
+            'slug' => 'manager',
+        ]);
+        
+        $operatorRole = Role::factory()->create([
+            'title' => 'Operator',
+            'slug' => 'operator',
+        ]);
+        //=============================
+        $managerRole->permissions()->attach([ 
+            $viewPermission->id,
+            $managePermissions->id,
+        ]);
+        
+        $operatorRole->permissions()->attach([      
+            $viewPermission->id,
+        ]);
+        //----------------------------
+        $managerMembership = Membership::factory()->create([
+            'account_id' => $account1->id,
+            'organization_id' => $org->id,
+            'department_id' => $firstLevelDepartment->id,
+            'role_id' => $managerRole->id,
+            'status' => 'active',
+        ]);
+        $operatorMembership = Membership::factory()->create([
+            'account_id' => $account2->id,
+            'organization_id' => $org->id,
+            'department_id' => $secondLevelDepartment->id,
+            'role_id' => $operatorRole->id,
+            'status' => 'active',
+        ]);        
+        //=============================
+        $this->assertDatabaseHas('memberships', [ 
+            'id' => $managerMembership->id,
+            'account_id' => $account1->id,
+            'department_id' => $firstLevelDepartment->id,
+        ]);
+        //=============================
+        $response = $this->actingAs($account1, 'api')  
+        ->withHeader(
+            'X-Department-Id',    
+            $firstLevelDepartment->id
+        )->postJson(
+            "api/memberships/{$operatorMembership->id}/permissions/{$updatePermission->id}"     //ای پی آی برای به حرکت در آوردن کنترلر با همین ورودی ها
+        );
+
+        $response->assertForbidden();
+        // dd([
+        //     'status' => $response->status(),
+        //     'body' => $response->json(),
+        // ]);
+
+        $this->assertDatabaseMissing('membership_permission', [ 
+            'membership_id' => $operatorMembership->id,
+            'permission_id' => $updatePermission->id,
+        ]);
+    }
 }
