@@ -555,4 +555,116 @@ class DelegatePermissionTest extends TestCase{
             'permission_id' => $updatePermission->id,
         ]);
     }
+    //
+    public function test_cannot_delegate_to_out_of_organization(){
+        $sourceOrg = Organization::withoutEvents(function () {  
+            return Organization::factory()->create();
+        });
+        $destOrg = Organization::withoutEvents(function () {  
+            return Organization::factory()->create();
+        });
+        $account1 = Account::factory()->create([
+            'organization_id' => $sourceOrg->id,      
+        ]);
+        
+        $account2 = Account::factory()->create([
+            'organization_id' => $destOrg->id,
+        ]);        
+
+        $sourceRoot = Department::factory()->create([
+            'organization_id' => $sourceOrg->id,
+        ]);
+        $sourceDepartment = Department::factory()->create([
+            'organization_id' => $sourceOrg->id,
+            'parent_id' => $sourceRoot->id,
+        ]);
+        $destRoot = Department::factory()->create([
+            'organization_id' => $destOrg->id,
+        ]);
+        $destDepartment = Department::factory()->create([
+            'organization_id' => $destOrg->id,
+            'parent_id' => $destRoot->id,
+        ]);
+        //===============
+        $viewPermission = Permission::factory()->create([
+            'slug' => 'department_view',
+            'target' => 'department',
+            'subject' => 'view',
+            'is_delegable' => true,
+        ]);
+        
+        $updatePermission = Permission::factory()->create([
+            'slug' => 'department_update',
+            'target' => 'department',
+            'subject' => 'update',
+            'is_delegable' => true
+        ]);
+        
+        $managePermissions = Permission::factory()->create([
+            'slug' => 'membership_manage_permissions',
+            'target' => 'membership',
+            'subject' => 'manage_permissions',
+            'is_delegable' => false,
+        ]);
+        //============================
+        $managerRole = Role::factory()->create([
+            'title' => 'Manager',
+            'slug' => 'manager',
+        ]);
+        
+        $operatorRole = Role::factory()->create([
+            'title' => 'Operator',
+            'slug' => 'operator',
+        ]);
+        //=============================
+        $managerRole->permissions()->attach([ 
+            $viewPermission->id,
+            $updatePermission->id,
+            $managePermissions->id,
+        ]);
+        
+        $operatorRole->permissions()->attach([      
+            $viewPermission->id,
+        ]);
+        //----------------------------
+        $managerMembership = Membership::factory()->create([
+            'account_id' => $account1->id,
+            'organization_id' => $sourceOrg->id,
+            'department_id' => $sourceDepartment->id,
+            'role_id' => $managerRole->id,
+            'status' => 'active',
+        ]);
+        $operatorMembership = Membership::factory()->create([
+            'account_id' => $account2->id,
+            'organization_id' => $destOrg->id,
+            'department_id' => $destDepartment->id,
+            'role_id' => $operatorRole->id,
+            'status' => 'active',
+        ]);        
+        //=============================
+        $this->assertDatabaseHas('memberships', [ 
+            'id' => $managerMembership->id,
+            'account_id' => $account1->id,
+            'department_id' => $sourceDepartment->id,
+        ]);
+        //=============================
+        $response = $this->actingAs($account1, 'api')  
+        ->withHeader(
+            'X-Department-Id',    
+            $sourceDepartment->id
+        )->postJson(
+            "api/memberships/{$operatorMembership->id}/permissions/{$updatePermission->id}"     //ای پی آی برای به حرکت در آوردن کنترلر با همین ورودی ها
+        );
+
+        $response->assertForbidden();
+        // dd([
+        //     'status' => $response->status(),
+        //     'body' => $response->json(),
+        // ]);
+
+        $this->assertDatabaseMissing('membership_permission', [ 
+            'membership_id' => $operatorMembership->id,
+            'permission_id' => $updatePermission->id,
+        ]);
+    }
 }
