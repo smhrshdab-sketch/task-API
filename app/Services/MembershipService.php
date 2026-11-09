@@ -13,10 +13,6 @@ class MembershipService
 {
     public function createMembership(array $data): Membership{
         return DB::transaction(function () use ($data) {
-            // Handle permissions_override JSON
-            if (isset($data['permissions_override'])) {
-                $data['permissions_override'] = json_encode($data['permissions_override']);
-            }
             
             $membership = Membership::create($data);
             
