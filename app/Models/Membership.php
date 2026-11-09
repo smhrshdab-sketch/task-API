@@ -5,7 +5,6 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Auth\Access\Authorizable;
-use Illuminate\Support\Facades\Cache;
 
 class Membership extends Model{
     /** @use HasFactory<\Database\Factories\MembershipFactory> */
@@ -17,11 +16,7 @@ class Membership extends Model{
         'department_id',
         'organization_id',
         'role_id',
-        'status',
-        'permissions_override'
-    ];
-    protected $casts = [
-        'permissions_override' => 'array',
+        'status'
     ];
     //-----------------
     public function role(){
