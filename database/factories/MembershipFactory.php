@@ -23,8 +23,7 @@ class MembershipFactory extends Factory
             'organization_id'  => Organization::factory(),
             'department_id'    => Department::factory(),
             'role_id'          => Role::factory(),
-            'status'           => 'active',
-            'permissions_override' => null,
+            'status'           => 'active'
         ];
     }
 }

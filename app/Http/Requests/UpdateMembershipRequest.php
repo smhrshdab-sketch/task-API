@@ -27,8 +27,7 @@ class UpdateMembershipRequest extends FormRequest
         return [
             'status' => ['sometimes', 'required', Rule::in(['active', 'suspended'])],
             'department_id' => ['sometimes', 'required', 'exists:departments,id'],
-            'role_id' => ['sometimes', 'required', 'exists:roles,id'],
-            'permissions_override' => ['nullable', 'json'],
+            'role_id' => ['sometimes', 'required', 'exists:roles,id']
         ];
     }
     

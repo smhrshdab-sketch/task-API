@@ -24,12 +24,7 @@ class StoreMembershipRequest extends FormRequest
             'organization_id' => ['required', 'exists:organizations,id'],
             'department_id' => ['nullable', 'exists:departments,id'],
             'role_id' => ['required', 'exists:roles,id'],
-            'status' => ['required', 'in:active,suspended'],
-            'permissions_override' => ['nullable', 'array'],
-            'permissions_override.*' => [
-                'string',
-                'exists:permissions,slug',
-            ],
+            'status' => ['required', 'in:active,suspended']
         ];
     }
      public function messages(): array{
@@ -42,8 +37,7 @@ class StoreMembershipRequest extends FormRequest
             'role_id.required' => 'Role ID is required',
             'role_id.exists' => 'The selected role does not exist',
             'status.required' => 'Status is required',
-            'status.in' => 'Status must be either active or suspended',
-            'permissions_override.array' => 'Permissions override must be a valid JSON object',
+            'status.in' => 'Status must be either active or suspended'
         ];
     }
 }
