@@ -51,11 +51,6 @@ class Account extends Authenticatable implements JWTSubject
             'pv' => $this->permissions_version,
         ];
     }
-    //چک کردن یک حق دسترسی در میان کل حق دسترسی ها(ی کاربر خاص)
-    public function hasPermission(string $permission): bool{
-        return in_array($permission, $this->getAllPermissions());
-        //return in_array($permission, $this->permissions ?? []);
-    }
     // آیا برای او (کاربر فراخواننده تابع) نقش داده شده ثبت شده؟
     public function hasRole(string $roleName): bool{
         return $this->memberships
