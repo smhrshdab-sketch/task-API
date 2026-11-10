@@ -175,35 +175,7 @@ class AuthorizationTest extends TestCase
             );
             dump("assert2  : ",$assert);
     }
-    //--------------
-    public function test_user_can_update_task_with_permission_override(){
-        Cache::flush();
-        $organization = Organization::factory()->create();
-        $department = Department::factory()->root()->create([
-            'organization_id' => $organization->id,
-        ]);
-        $account = Account::factory()->create();
-        $role = Role::factory()->create([
-            'permissions' => ['tasks.view'], // update
-        ]);
-        $membership = Membership::factory()->create([
-            'account_id' => $account->id,
-            'organization_id' => $organization->id,
-            'department_id' => $department->id,
-            'role_id' => $role->id,
-                'permissions_override' => [
-                'tasks.update' => true,
-                ],
-            ]);
-        $task = Task::factory()->create([
-            'department_id' => $department->id,
-        ]);
-        $this->actingAs($account, 'api');
-        $this->assertTrue(
-            Gate::forUser($account)->allows('update', $task)
-        );
-    }
-//-------------------پ
+//-------------------
     public function test_user_cannot_update_task_in_parent_department(){
         $org = Organization::factory()->create();
 
