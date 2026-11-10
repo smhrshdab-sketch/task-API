@@ -21,7 +21,6 @@ return new class extends Migration
                 ->nullOnDelete();
             $table->foreignId('role_id')->constrained();
             $table->enum('status', ['active', 'suspended'])->default('active');
-            $table->json('permissions_override')->nullable();
             $table->timestamps();
            $table->unique(['account_id', 'organization_id', 'department_id']);
         });
