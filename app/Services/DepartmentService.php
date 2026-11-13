@@ -18,14 +18,6 @@ class DepartmentService{
                 ? null 
                 : (int)$parentId;
             
-            // Log::info('createDepartment', [
-            //     'parent_id' => $parentId,
-            //     'parent_id_for_db' => $parentIdForDb,
-            //     'next_path' => $nextPath,
-            //     'next_path_type' => gettype($nextPath),
-            //     'data' => $data
-            // ]);
-            
             $department = Department::create([
                 'title' => $data['title'],
                 'description' => $data['description'] ?? null,
@@ -36,12 +28,6 @@ class DepartmentService{
             ]);
             $this->getDepartmentList();
             $this->getDepartmentMap();
-            // Log::info('Department created', [
-            //     'id' => $department->id,
-            //     'path' => $department->path,
-            //     'path_type' => gettype($department->path),
-            //     'parent_id' => $department->parent_id
-            // ]);
             
             return $department;
         });
@@ -166,40 +152,17 @@ class DepartmentService{
         } else {
             $query->where('parent_id', (int)$parentId);
         }
-        
-        // Now path is integer, so sorting works correctly!
         $result = $query->orderBy('path', 'desc')->first();
-        
-        // Log::info('getLastSibling', [
-        //     'parent_id' => $parentId,
-        //     'last_path' => $result?->path,
-        //     'last_path_type' => gettype($result?->path),
-        //     'found' => $result ? true : false
-        // ]);
         
         return $result;
     }
     public function getNextPathNumber($parentId){
         $lastSibling = $this->getLastSibling($parentId);
         
-        if ($lastSibling) {
-            // Path is now integer, so addition works correctly
+        if ($lastSibling) {            
             $nextPath = (int)$lastSibling->path + 1;
-            
-            // Log::info('getNextPathNumber - incrementing', [
-            //     'parent_id' => $parentId,
-            //     'last_path' => $lastSibling->path,
-            //     'last_path_type' => gettype($lastSibling->path),
-            //     'next_path' => $nextPath
-            // ]);
-            
             return $nextPath;
         }
-        
-        // Log::info('getNextPathNumber - first sibling', [
-        //     'parent_id' => $parentId,
-        //     'next_path' => 1
-        // ]);
         
         return 1;
     }
