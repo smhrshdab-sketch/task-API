@@ -17,8 +17,7 @@ class StoreAccountRequest extends FormRequest
             'email' => ['required', 'email', 'unique:accounts,email'],
             'password' => ['required', 'string', 'min:8'],
             'bio' => ['nullable', 'string', 'max:1000'],
-            'avatar_path' => ['nullable', 'string', 'max:1000'],
-            'organization_id' => ['nullable', 'exists:organizations,id'], // Optional if you want to allow custom org
+            'avatar_path' => ['nullable', 'string', 'max:1000']
         ];
     }
     
@@ -34,11 +33,6 @@ class StoreAccountRequest extends FormRequest
     
     protected function prepareForValidation(): void
     {
-        // Set default organization_id if not provided
-        if (!$this->has('organization_id')) {
-            $this->merge([
-                'organization_id' => 1 // Or get from current user's organization
-            ]);
-        }
+        //just for prepare or casting data not for set domain vaalues!!
     }
 }
