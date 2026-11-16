@@ -20,24 +20,20 @@ class AccountService
         return DB::transaction(function () use ($data) {
             // Prepare the account data
             $accountData = [
-                'organization_id' => $data['organization_id'] ?? 1,
                 'name' => $data['name'],
                 'email' => strtolower(trim($data['email'])),
                 'password' => Hash::make($data['password']),
-                'bio' => $data['bio'] ?? null,
-                'permissions_version' => 1,
+                'bio' => $data['bio'] ?? null
             ];
             
             // Create the account
             $account = Account::create($accountData);
             //event(new UserRegistered($account));
             
-            // Create membership - FIXED: Remove quotes around numbers
             $member = Membership::create([
                 'account_id' => $account->id,  // This is correct
-                'organization_id' => $account->organization_id ?? 1,
-                'department_id' => 1,  // Remove quotes - should be integer
-                'role_id' => 1,        // Remove quotes - should be integer
+                'department_id' => 1,
+                'role_id' => 1,      
                 'status' => 'active'
             ]);
             
@@ -56,7 +52,6 @@ class AccountService
      * Create account and return with authentication token (returns array)
      */
     public function createAccountWithToken(array $data): array{
-        return DB::transaction(function () use ($data) {
             // Create the account (this returns Account model)
             $account = $this->createAccount($data);
             
@@ -73,7 +68,6 @@ class AccountService
                 'token_type' => 'bearer',
                 'expires_in' => $ttl * 60
             ];
-        });
     }
 
     // ------------------------
