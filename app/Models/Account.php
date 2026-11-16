@@ -13,8 +13,6 @@ class Account extends Authenticatable implements JWTSubject
     use SoftDeletes;
 
     protected $fillable = [
-        'organization_id',
-        'name',
         'email',
         'password',
         'bio',
@@ -47,36 +45,6 @@ class Account extends Authenticatable implements JWTSubject
 
     public function getJWTCustomClaims(){
         return [
-            'org_id' => $this->organization_id,
-            'pv' => $this->permissions_version,
         ];
-    }
-    // آیا برای او (کاربر فراخواننده تابع) نقش داده شده ثبت شده؟
-    public function hasRole(string $roleName): bool{
-        return $this->memberships
-            ->pluck('role.title')
-            ->contains($roleName);
-    }
-    public function roleTitleFor(Department $department): ?string{
-        $membership =  $this->memberships()
-            ->where('department_id', $department->id)
-            ->where('status', 'active')
-            ->with('role')->first();
-            //dump("roleTitleFor : ",$membership);
-            return $membership?->role->title;
-    }
-    /*
-    «برای این کاربر، کدوم عضویت (ممبرشیپ) مربوط به این دپارتمانه؟»
-    چون:
-        یک حساب(اکانت) ممکنه چند عضویت داشته باشه
-        در دپارتمان‌های مختلف
-        با نقش‌ها و مجوزهای مختلف
-     */
-    public function membershipForTask(Task $task): ?Membership{//آیا اکانت مورد نظر(فراخواننده این تابع)عضوی از تیم تسک است؟ یا واحدش بالاتر واحد تسک داده شده است؟
-        return $this->memberships
-            ->first(function ($m) use ($task) {
-                return $m->department_id === $task->department_id
-                    || $m->department->isAncestorOf($task->department);
-            });
     }
 }
