@@ -22,6 +22,7 @@ class SetDepartmentContext{
 
         $membership = Membership::where('account_id', auth()->id())
             ->whereKey($membershipId)
+            ->where('status', 'active')
             ->first();
 
         if (!$membership) {
