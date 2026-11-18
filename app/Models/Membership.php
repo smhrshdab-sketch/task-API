@@ -50,6 +50,9 @@ class Membership extends Model{
     public function auditLogs(){
         return $this->hasMany(AuditLog::class, 'causer_id', 'id');
     }
+    public function organization(){
+        return $this->belongsTo(Organization::class);
+    }
     //======== Accessors ========
     public function getEffectivePermissions(): array{
         $rolePermissions = $this->role
