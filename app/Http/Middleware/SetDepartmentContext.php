@@ -8,37 +8,33 @@ use App\Models\Membership;
 use App\Services\DepartmentContext;
 use Symfony\Component\HttpFoundation\Response;
 
-class SetDepartmentContext
-{
+class SetDepartmentContext{
     public function handle(Request $request, Closure $next): Response{
-        //logger()->info('=== SetDepartmentContext STARTED ===');
-        $departmentId = $request->header('X-Department-Id');
+        $membershipId = $request->header('X-Membership-Id');
 
-        if (!$departmentId) {
-            logger()->warning('No department ID in header');
+        if (!$membershipId) {
+            logger()->warning('No membership ID in header');
+
             return response()->json([
-                'message' => 'Department context not provided'
+                'message' => 'Membership context not provided'
             ], 400);
         }
 
         $membership = Membership::where('account_id', auth()->id())
-            ->where('department_id', $departmentId)
+            ->whereKey($membershipId)
             ->first();
 
         if (!$membership) {
             logger()->warning('No membership found', [
                 'account_id' => auth()->id(),
-                'department_id' => $departmentId
+                'membership_id' => $membershipId,
             ]);
+
             return response()->json([
-                'message' => 'You are not a member of this department'
+                'message' => 'You are not a member of this membership'
             ], 403);
         }
-        //logger()->info('Membership found', ['membership_id' => $membership->id]);
-        app(DepartmentContext::class)->setMembership($membership);
-        //$request->attributes->set('membership', $membership);// تزریق membership به request
-        //logger()->info('=== SetDepartmentContext FINISHED ===');
 
-        return $next($request);
+        app(DepartmentContext::class)->setMembership($membership);
     }
 }
