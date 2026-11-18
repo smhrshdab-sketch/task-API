@@ -28,32 +28,27 @@ class AuthController extends Controller{
                 'message' => 'Invalid credentials',
             ], 401);
         }
+        $account = auth('api')->user();
 
-        // logger('Login success', [
-        //     'email' => $credentials['email'],
-        //     'user_id' => Auth::guard('api')->user()->id,
-        // ]);
-        $uid = auth('api')->user();
-        $member = $uid->memberships;
-        //$member = Membership::where('account_id',$uid->id);
-        // logger('Account: ',[$uid->name]);
-        // logger('Membership: ',[$member[0]]);
+        $memberships = $account->memberships()
+            ->where('status', 'active')
+            ->with(['organization', 'department', 'role'])
+            ->get();
+
         return response()->json([
             'access_token' => $token,
-            'token_type'   => 'bearer',
-            'department'   => $member[0]->department_id,
-            'expires_in'   => Auth::guard('api')->factory()->getTTL() * 60,
-            'user'         => Auth::guard('api')->user(),
+            'token_type' => 'bearer',
+            'expires_in' => Auth::guard('api')->factory()->getTTL() * 60,
+            'user' => $account,
+            'memberships' => $memberships,
         ]);
     }
     //===========
     public function me(){
-        //logger('me me');
         return response()->json(auth('api')->user());
     }
 
     public function logout(){
-        logger('logout',[auth('api')]);
         auth('api')->logout();
 
         return response()->json([
@@ -68,6 +63,4 @@ class AuthController extends Controller{
             'expires_in' => auth('api')->factory()->getTTL() * 60
         ]);
     }
-
-
 }
