@@ -6,7 +6,7 @@ use App\Models\Membership;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
-class DepartmentContextMiddlewareTest extends TestCase
+class MembershipContextMiddlewareTest extends TestCase
 {
     use RefreshDatabase;
     //php artisan test --filter=

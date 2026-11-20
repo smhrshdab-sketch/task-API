@@ -4,7 +4,7 @@ namespace App\Services;
 use App\Models\Membership;
 use App\Models\Department;
 
-class DepartmentContext
+class MembershipContext
 {
     protected ?Membership $membership = null;
 

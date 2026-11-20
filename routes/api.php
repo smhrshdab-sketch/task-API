@@ -23,7 +23,7 @@ use Tymon\JWTAuth\Facades\JWTAuth;
         //----------
     });
     
-    Route::middleware(['auth:api', 'department.context'])->group(function () { 
+    Route::middleware(['auth:api', 'membership.context'])->group(function () { 
         //========== Department =========
         Route::post('department', [DepartmentController::class, 'store'])->name("department_store");
         Route::get('departments', [DepartmentController::class, 'index'])->name("department_list");

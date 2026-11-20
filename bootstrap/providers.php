@@ -2,6 +2,6 @@
 
 return [
     App\Providers\AppServiceProvider::class,
-    App\Providers\DepartmentContextProvider::class,
+    App\Providers\MembershipContextProvider::class,
     App\Providers\EventServiceProvider::class
 ];

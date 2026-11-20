@@ -2,7 +2,7 @@
 
 use App\Exceptions\MembershipContextMissingException;
 use App\Exceptions\ModelCannotHaveAttachmentsException;
-use App\Http\Middleware\SetDepartmentContext;
+use App\Http\Middleware\SetMembershipContext;
 use Illuminate\Auth\Middleware\Authenticate;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Middleware;
@@ -16,7 +16,7 @@ return Application::configure(basePath: dirname(__DIR__))
 
         $middleware->alias([
             'auth' => Authenticate::class,
-            'department.context' => SetDepartmentContext::class,
+            'membership.context' => SetMembershipContext::class,
         ]);
 
     })

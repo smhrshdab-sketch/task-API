@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Membership;
-use App\Services\DepartmentContext;
+use App\Services\MembershipContext;
 use Illuminate\Http\Request;
 
 class SwitchDepartmentController extends Controller
@@ -17,7 +17,7 @@ class SwitchDepartmentController extends Controller
             ->where('department_id', $request->department_id)
             ->firstOrFail();
 
-        app(DepartmentContext::class)->setMembership($membership);
+        app(MembershipContext::class)->setMembership($membership);
 
         return response()->json([
             'message' => 'Department context switched'

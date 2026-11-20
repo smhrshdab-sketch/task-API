@@ -3,15 +3,15 @@
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
-use App\Services\DepartmentContext;
+use App\Services\MembershipContext;
 
-class DepartmentContextProvider extends ServiceProvider
+class MembershipContextProvider extends ServiceProvider
 {
     public function register(): void
     {
         // Bind as a singleton - same instance throughout the request
-        $this->app->singleton(DepartmentContext::class, function ($app) {
-            return new DepartmentContext();
+        $this->app->singleton(MembershipContext::class, function ($app) {
+            return new MembershipContext();
         });
     }
 

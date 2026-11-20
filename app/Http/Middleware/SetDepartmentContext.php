@@ -5,10 +5,10 @@ namespace App\Http\Middleware;
 use Closure;
 use Illuminate\Http\Request;
 use App\Models\Membership;
-use App\Services\DepartmentContext;
+use App\Services\MembershipContext;
 use Symfony\Component\HttpFoundation\Response;
 
-class SetDepartmentContext{
+class SetMembershipContext{
     public function handle(Request $request, Closure $next): Response{
         $membershipId = $request->header('X-Membership-Id');
 
@@ -36,6 +36,12 @@ class SetDepartmentContext{
             ], 403);
         }
 
-        app(DepartmentContext::class)->setMembership($membership);
+        app(MembershipContext::class)->setMembership($membership);
+
+        return response()->json([
+            'success' => true,
+            'message' => "your context is set successfully!",
+            'memberships' => $membership
+        ],200);
     }
 }
