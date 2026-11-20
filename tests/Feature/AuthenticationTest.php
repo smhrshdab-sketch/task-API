@@ -91,4 +91,40 @@ class AuthenticationTest extends TestCase{
             'id' => $membership3->id,
         ]);
     }
+    //=================
+    public function test_user_can_select_context_with_valid_membership(){
+        $account = Account::factory()->create([
+            'name' => 'Sara Kenny',
+            'email' => 's.kenny@gmail.com',
+            'bio' => 'some stuff!!',
+        ]);
+
+        $membership = Membership::factory()->create([
+            'account_id' => $account->id,
+            'status' => 'active',
+        ]);
+
+        // Login
+        $response = $this->postJson('/api/login', [
+            'email' => 's.kenny@gmail.com',
+            'password' => 'password',
+        ]);
+
+        $response->assertSuccessful();
+
+        $token = $response->json('access_token');
+        logger('response,token',[$response,$token]);
+
+        // Membership
+        $contextResponse = $this
+            ->withToken($token, 'api')
+            ->withHeader('X-Membership-Id', $membership->id)
+            ->getJson('/api/context-test');
+
+        $contextResponse->assertSuccessful();
+
+        $contextResponse->assertJson([
+            'membershipId' => $membership->id,
+        ]);
+    }
 }
