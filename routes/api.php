@@ -74,5 +74,11 @@ use Tymon\JWTAuth\Facades\JWTAuth;
         
         //============ AuditLog =========
         Route::get('audit', [AuditLogController::class, 'index'])->name("audit_list");
+        //============ test =============
+        Route::get('context-test', function () {
+            return response()->json([
+                'membershipId' => current_membership()->id,
+            ]);
+        });
     });
 //
