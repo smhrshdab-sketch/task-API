@@ -8,10 +8,8 @@ class MembershipContext
 {
     protected ?Membership $membership = null;
 
-    public function setMembership(Membership $membership): void{
-        //dump("Membership in setMembership : ",$membership);        
+    public function setMembership(Membership $membership): void{      
         $this->membership = $membership;
-        //logger()->error('Membership in setMembership : ', [$this->membership]);
     }
 
     public function getMembership(): ?Membership{

@@ -35,7 +35,16 @@ class SetMembershipContext{
                 'message' => 'You are not a member of this membership'
             ], 403);
         }
-
+        logger()->info('Before setting context', [
+            'membership_id' => $membership?->id,
+            'account_id' => $membership?->account_id,
+        ]);
+        
         app(MembershipContext::class)->setMembership($membership);
+        
+        logger()->info('After setting context', [
+            'direct' => app(MembershipContext::class)->getMembership()?->id,
+        ]);
+        return $next($request);
     }
 }
