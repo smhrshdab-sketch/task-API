@@ -37,11 +37,5 @@ class SetMembershipContext{
         }
 
         app(MembershipContext::class)->setMembership($membership);
-
-        return response()->json([
-            'success' => true,
-            'message' => "your context is set successfully!",
-            'memberships' => $membership
-        ],200);
     }
 }
