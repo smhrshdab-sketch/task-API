@@ -36,6 +36,7 @@ class AuthController extends Controller{
             ->get();
 
         return response()->json([
+            'success' => true,
             'access_token' => $token,
             'token_type' => 'bearer',
             'expires_in' => Auth::guard('api')->factory()->getTTL() * 60,
