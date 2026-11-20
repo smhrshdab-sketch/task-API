@@ -25,23 +25,13 @@ class AccountService
                 'password' => Hash::make($data['password']),
                 'bio' => $data['bio'] ?? null
             ];
-            
             // Create the account
             $account = Account::create($accountData);
             //event(new UserRegistered($account));
-            
-            $member = Membership::create([
-                'account_id' => $account->id,  // This is correct
-                'department_id' => 1,
-                'role_id' => 1,      
-                'status' => 'active'
-            ]);
-            
+
             Log::info('Account created successfully', [
                 'account_id' => $account->id,
-                'email' => $account->email,
-                'membership_id' => $member->id,
-                'status' => $member->status
+                'email' => $account->email
             ]);
             
             return $account;
