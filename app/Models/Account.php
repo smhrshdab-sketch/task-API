@@ -13,6 +13,7 @@ class Account extends Authenticatable implements JWTSubject
     use SoftDeletes;
 
     protected $fillable = [
+        'name',
         'email',
         'password',
         'bio',
